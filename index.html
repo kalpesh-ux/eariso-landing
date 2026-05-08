@@ -1,0 +1,1199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Eariso — The AI Mirror that shows you your own thinking</title>
+<meta name="description" content="Eariso is a pattern intelligence system. Not a chatbot. An AI that helps you see the patterns driving your thinking and behaviour.">
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0A0908;
+    --bg-soft: #0F0E0D;
+    --bg-card: #141312;
+    --text: #E8E6E1;
+    --text-soft: #9A9690;
+    --text-dim: #5A5650;
+    --gold: #C9A961;
+    --rule: #252220;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    font-size: 16px;
+    overflow-x: hidden;
+  }
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    background: rgba(10,9,8,0.92);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--rule);
+  }
+  .nav-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 18px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--gold);
+    min-width: 0;
+  }
+  .brand-logo {
+    width: 34px;
+    height: 34px;
+    object-fit: contain;
+    display: block;
+    flex-shrink: 0;
+  }
+  .brand-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 28px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .nav-links {
+    display: flex;
+    gap: 34px;
+    align-items: center;
+  }
+  .nav-links a {
+    color: var(--text-soft);
+    text-decoration: none;
+    font-size: 12px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: color 0.3s;
+    font-weight: 400;
+  }
+  .nav-links a:hover,
+  .nav-links a.active { color: var(--gold); }
+  .nav-store {
+    display: flex;
+    gap: 10px;
+  }
+  .nav-store a {
+    padding: 7px 16px;
+    border: 1px solid var(--rule);
+    font-size: 11px;
+    color: var(--text-soft);
+    cursor: pointer;
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+    text-decoration: none;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .nav-store a:hover { border-color: var(--gold); color: var(--gold); }
+  .nav-store a.primary { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+  .nav-store a.primary:hover { background: transparent; color: var(--gold); }
+  .nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+  }
+  .nav-toggle span {
+    display: block;
+    width: 22px; height: 1px;
+    background: var(--text);
+    margin: 5px 0;
+  }
+  .page { display: none; min-height: 100vh; padding-top: 68px; }
+  .page.active { display: block; }
+  .section-mark {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 24px;
+  }
+  .hero {
+    min-height: calc(100vh - 68px);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 80px 40px;
+    position: relative;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 800px; height: 800px;
+    background: radial-gradient(circle, rgba(201,169,97,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-logo {
+    width: 92px;
+    height: 92px;
+    object-fit: contain;
+    margin-bottom: 26px;
+    opacity: 0;
+    animation: fadeUp 1s 0.05s forwards;
+    filter: drop-shadow(0 0 18px rgba(201,169,97,0.12));
+  }
+  .hero-eyebrow {
+    font-size: 10px;
+    letter-spacing: 5px;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 34px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    opacity: 0;
+    animation: fadeUp 1s 0.1s forwards;
+  }
+  .hero-eyebrow::before,
+  .hero-eyebrow::after {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--gold);
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(42px, 7vw, 82px);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    max-width: 880px;
+    margin-bottom: 24px;
+    opacity: 0;
+    animation: fadeUp 1s 0.25s forwards;
+  }
+  .hero-title em { font-style: italic; color: var(--gold); }
+  .hero-sub {
+    font-size: 17px;
+    color: var(--text-soft);
+    max-width: 560px;
+    line-height: 1.75;
+    margin-bottom: 50px;
+    opacity: 0;
+    animation: fadeUp 1s 0.4s forwards;
+  }
+  .hero-divider {
+    width: 1px; height: 44px;
+    background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+    margin-bottom: 50px;
+    opacity: 0;
+    animation: fadeUp 1s 0.5s forwards;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(18px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .how-it-works {
+    border-top: 1px solid var(--rule);
+    padding: 100px 40px;
+  }
+  .how-inner { max-width: 1100px; margin: 0 auto; }
+  .how-cards {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border: 1px solid var(--rule);
+  }
+  .how-card {
+    padding: 50px 40px;
+    border-right: 1px solid var(--rule);
+  }
+  .how-card:last-child { border-right: none; }
+  .how-card-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--text-dim);
+    margin-bottom: 28px;
+    font-style: italic;
+  }
+  .how-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 14px;
+    line-height: 1.3;
+  }
+  .how-card p {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text-soft);
+  }
+  .territories {
+    padding: 100px 40px;
+    background: var(--bg-soft);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .territories-inner { max-width: 1100px; margin: 0 auto; }
+  .territories-header { margin-bottom: 50px; }
+  .territories-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(34px, 4vw, 50px);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.5px;
+  }
+  .territories-title em { font-style: italic; color: var(--gold); }
+  .territories-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    border: 1px solid var(--rule);
+  }
+  .t-cell {
+    padding: 26px 24px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    transition: background 0.3s;
+  }
+  .t-cell:hover { background: rgba(201,169,97,0.04); }
+  .t-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 5px;
+    line-height: 1.2;
+  }
+  .t-desc {
+    font-size: 12px;
+    color: var(--text-dim);
+    line-height: 1.5;
+  }
+  .territory-alt-divider {
+    text-align: center;
+    margin: 38px 0 22px;
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    font-style: italic;
+  }
+  .territory-alt-divider::before,
+  .territory-alt-divider::after {
+    content: "";
+    display: inline-block;
+    width: 32px;
+    height: 1px;
+    background: var(--rule);
+    vertical-align: middle;
+    margin: 0 14px;
+  }
+  .not-sure-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+    padding: 36px 40px;
+    border: 1px solid rgba(201,169,97,0.32);
+    background: linear-gradient(135deg, rgba(201,169,97,0.06), rgba(201,169,97,0.01));
+    transition: background 0.35s;
+    cursor: pointer;
+  }
+  .not-sure-card:hover {
+    background: linear-gradient(135deg, rgba(201,169,97,0.10), rgba(201,169,97,0.02));
+  }
+  .not-sure-card-text {
+    flex: 1;
+  }
+  .not-sure-card-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(24px, 2.6vw, 30px);
+    font-weight: 400;
+    color: var(--text);
+    line-height: 1.25;
+    margin-bottom: 8px;
+  }
+  .not-sure-card-desc {
+    font-size: 14px;
+    color: var(--text-soft);
+    line-height: 1.55;
+  }
+  .not-sure-card-cta {
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    white-space: nowrap;
+    border-bottom: 1px solid rgba(201,169,97,0.45);
+    padding-bottom: 3px;
+  }
+  .go-deeper {
+    padding: 100px 40px;
+    border-top: 1px solid var(--rule);
+  }
+  .go-deeper-inner { max-width: 1100px; margin: 0 auto; }
+  .go-deeper-header { margin-bottom: 50px; }
+  .go-deeper-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4.5vw, 56px);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    max-width: 640px;
+  }
+  .go-deeper-title em { font-style: italic; color: var(--gold); }
+  .go-deeper-intro {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(17px, 2vw, 20px);
+    color: var(--text-soft);
+    line-height: 1.6;
+    margin-top: 22px;
+    max-width: 640px;
+  }
+  .deeper-cards {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    margin-bottom: 18px;
+  }
+  .deeper-card {
+    padding: 38px;
+    background: var(--bg-soft);
+    border: 1px solid var(--rule);
+    position: relative;
+  }
+  .deeper-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,169,97,0.25), transparent);
+  }
+  .deeper-card-tag {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 18px;
+  }
+  .deeper-card h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 12px;
+    line-height: 1.2;
+  }
+  .deeper-card p {
+    font-size: 14px;
+    line-height: 1.75;
+    color: var(--text-soft);
+  }
+  .deeper-card-full { grid-column: span 2; }
+  .home-pricing {
+    padding: 100px 40px;
+    border-top: 1px solid var(--rule);
+    background: var(--bg-soft);
+    text-align: center;
+  }
+  .home-pricing-inner {
+    max-width: 520px;
+    margin: 0 auto;
+  }
+  .home-pricing-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(36px, 4.5vw, 54px);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    margin-bottom: 50px;
+  }
+  .home-pricing-title em { font-style: italic; color: var(--gold); }
+  .pricing-free-note {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--text-soft);
+    line-height: 1.6;
+    margin-top: -28px;
+    margin-bottom: 38px;
+  }
+  .pricing-card {
+    padding: 50px 44px;
+    background: var(--bg-card);
+    border: 1px solid var(--gold);
+    text-align: left;
+    position: relative;
+  }
+  .pricing-card::before {
+    content: 'GO DEEPER';
+    position: absolute;
+    top: -11px; right: 28px;
+    background: var(--gold);
+    color: var(--bg);
+    font-size: 9px;
+    letter-spacing: 2px;
+    padding: 5px 14px;
+    font-weight: 600;
+  }
+  .price-label {
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 18px;
+  }
+  .price-amount {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 72px;
+    font-weight: 300;
+    line-height: 1;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+  .price-amount .currency {
+    font-size: 36px;
+    vertical-align: super;
+    color: var(--gold);
+    margin-right: 2px;
+  }
+  .price-period {
+    font-size: 12px;
+    color: var(--text-dim);
+    letter-spacing: 1.5px;
+    margin-bottom: 32px;
+  }
+  .price-rule {
+    width: 36px; height: 1px;
+    background: var(--gold);
+    margin-bottom: 28px;
+  }
+  .price-features {
+    list-style: none;
+    margin-bottom: 36px;
+  }
+  .price-features li {
+    padding: 10px 0;
+    color: var(--text-soft);
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid var(--rule);
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+  }
+  .price-features li:last-child { border-bottom: none; }
+  .price-features li::before {
+    content: '◆';
+    color: var(--gold);
+    font-size: 7px;
+    flex-shrink: 0;
+  }
+  .price-btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background: var(--gold);
+    border: none;
+    color: var(--bg);
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    margin-bottom: 28px;
+  }
+  .price-btn:hover { background: transparent; color: var(--gold); outline: 1px solid var(--gold); }
+  .fair-use-block {
+    padding-top: 24px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+  }
+  .fair-use-label {
+    font-size: 9px;
+    letter-spacing: 3px;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-weight: 500;
+    white-space: nowrap;
+    padding-top: 3px;
+  }
+  .fair-use-block p {
+    font-size: 13px;
+    color: var(--text-soft);
+    line-height: 1.6;
+  }
+  .home-closing {
+    padding: 120px 40px;
+    text-align: center;
+    border-top: 1px solid var(--rule);
+  }
+  .closing-eyebrow {
+    font-size: 10px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-weight: 500;
+    margin-bottom: 20px;
+    display: block;
+  }
+  .closing-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 4.5vw, 52px);
+    font-weight: 400;
+    line-height: 1.15;
+    letter-spacing: -0.3px;
+    margin-bottom: 50px;
+  }
+  .about-page {
+    padding: 120px 40px 100px;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .about-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(42px, 6vw, 68px);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    margin-bottom: 60px;
+  }
+  .about-title em { font-style: italic; color: var(--gold); }
+  .about-body p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(18px, 2.2vw, 22px);
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--text-soft);
+    margin-bottom: 24px;
+  }
+  .about-measure {
+    margin-top: 70px;
+    padding-top: 50px;
+    border-top: 1px solid var(--rule);
+  }
+  .about-measure p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(18px, 2.2vw, 24px);
+    color: var(--text-soft);
+    line-height: 1.7;
+  }
+  .about-measure em { color: var(--gold); font-style: italic; }
+  .about-founder {
+    margin-top: 70px;
+    padding-top: 50px;
+    border-top: 1px solid var(--rule);
+  }
+  .founder-row {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    margin-top: 26px;
+  }
+  .founder-photo {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    object-fit: cover;
+    flex-shrink: 0;
+    border: 1px solid var(--rule);
+  }
+  .founder-text { flex: 1; }
+  .founder-text p {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(17px, 2vw, 20px);
+    font-weight: 300;
+    line-height: 1.7;
+    color: var(--text-soft);
+    margin-bottom: 14px;
+  }
+  .founder-link {
+    display: inline-block;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--gold);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(201,169,97,0.3);
+    padding-bottom: 3px;
+    transition: border-color 0.3s;
+  }
+  .founder-link:hover { border-bottom-color: var(--gold); }
+  .legal-page {
+    padding: 120px 40px 100px;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .legal-hero {
+    margin-bottom: 50px;
+    padding-bottom: 36px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .legal-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(40px, 6vw, 64px);
+    font-weight: 400;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+  }
+  .legal-title em { font-style: italic; color: var(--gold); }
+  .legal-meta {
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 1px;
+  }
+  .legal-intro {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px;
+    font-style: italic;
+    color: var(--text-soft);
+    line-height: 1.7;
+    margin-bottom: 50px;
+  }
+  .legal-section { margin-bottom: 40px; }
+  .legal-section h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px;
+    font-weight: 500;
+    color: var(--text);
+    margin-bottom: 14px;
+    margin-top: 44px;
+    letter-spacing: -0.2px;
+  }
+  .legal-section p {
+    font-size: 15px;
+    line-height: 1.85;
+    color: var(--text-soft);
+    margin-bottom: 12px;
+  }
+  .legal-section ul { list-style: none; margin-bottom: 16px; }
+  .legal-section li {
+    padding: 5px 0 5px 20px;
+    position: relative;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-soft);
+  }
+  .legal-section li::before {
+    content: '—';
+    position: absolute;
+    left: 0;
+    color: var(--gold);
+  }
+  .legal-section strong { color: var(--text); font-weight: 500; }
+  footer {
+    padding: 70px 40px 36px;
+    border-top: 1px solid var(--rule);
+    background: var(--bg-soft);
+  }
+  .footer-inner { max-width: 1200px; margin: 0 auto; }
+  .footer-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 40px;
+    padding-bottom: 50px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .footer-brand { max-width: 320px; }
+  .footer-brand .brand { margin-bottom: 14px; display: inline-flex; }
+  .footer-brand p {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    color: var(--text-soft);
+    line-height: 1.5;
+  }
+  .footer-links { display: flex; gap: 56px; flex-wrap: wrap; }
+  .footer-col h4 {
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+  .footer-col a {
+    display: block;
+    color: var(--text-soft);
+    text-decoration: none;
+    font-size: 13px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: color 0.3s;
+  }
+  .footer-col a:hover { color: var(--gold); }
+  .footer-bottom {
+    padding-top: 34px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+  .footer-bottom p { font-size: 11px; color: var(--text-dim); letter-spacing: 1px; }
+  .footer-bottom em {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    color: var(--text-soft);
+    font-size: 14px;
+  }
+  @media (max-width: 860px) {
+    .nav-inner { padding: 14px 16px; gap: 10px; }
+    .brand-logo { width: 28px; height: 28px; }
+    .brand-text { font-size: 20px; letter-spacing: 2.5px; }
+    .nav-links { gap: 16px; }
+    .nav-links a { font-size: 10px; letter-spacing: 1px; }
+    .nav-store { display: none; }
+    .nav-toggle { display: none; }
+    .hero { padding: 60px 24px 50px; }
+    .hero-logo { width: 74px; height: 74px; }
+    .how-it-works, .territories, .go-deeper,
+    .home-pricing, .home-closing { padding: 70px 24px; }
+    .how-cards { grid-template-columns: 1fr; }
+    .how-card { border-right: none; border-bottom: 1px solid var(--rule); }
+    .how-card:last-child { border-bottom: none; }
+    .territories-grid { grid-template-columns: repeat(2, 1fr); }
+    .not-sure-card { flex-direction: column; align-items: flex-start; padding: 26px 22px; gap: 18px; }
+    .deeper-cards { grid-template-columns: 1fr; }
+    .deeper-card-full { grid-column: span 1; }
+    .pricing-card { padding: 36px 24px; }
+    .fair-use-block { flex-direction: column; gap: 8px; }
+    .about-page, .legal-page { padding: 80px 24px 70px; }
+    .founder-row { flex-direction: column; align-items: flex-start; gap: 20px; }
+    .footer-top { flex-direction: column; }
+    .footer-links { gap: 32px; }
+  }
+  @media (max-width: 380px) {
+    .nav-inner { padding: 12px 12px; gap: 8px; }
+    .brand-logo { width: 24px; height: 24px; }
+    .brand-text { font-size: 17px; letter-spacing: 2px; }
+    .nav-links { gap: 10px; }
+    .nav-links a { font-size: 9px; letter-spacing: 0.8px; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="brand" onclick="showPage('home')">
+      <img src="logo.png" alt="Eariso logo" class="brand-logo">
+      <span class="brand-text">Eariso</span>
+    </a>
+    <button class="nav-toggle" onclick="toggleNav()">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
+      <a onclick="showPage('about')" data-page="about">About</a>
+      <a onclick="showPage('privacy')" data-page="privacy">Privacy</a>
+      <a onclick="showPage('terms')" data-page="terms">Terms</a>
+    </div>
+  </div>
+</nav>
+<div class="page active" id="page-home">
+  <div class="hero">
+    <img src="logo.png" alt="Eariso logo" class="hero-logo">
+    <div class="hero-eyebrow">A Space for Self-Observation</div>
+    <h1 class="hero-title">The AI Mirror that shows you <em>your own thinking.</em></h1>
+    <p class="hero-sub">Not just answers. What's behind the question. The patterns shaping your thoughts, decisions, and reactions — made visible, without judgment.</p>
+    <div class="hero-divider"></div>
+  </div>
+  <div class="how-it-works">
+    <div class="how-inner">
+      <span class="section-mark" style="text-align: center; margin-bottom: 40px;">How It Works</span>
+      <div class="how-cards">
+        <div class="how-card">
+          <div class="how-card-num">01</div>
+          <h3>You speak. Eariso listens differently.</h3>
+          <p>Not just to the words, but to what sits underneath them.</p>
+        </div>
+        <div class="how-card">
+          <div class="how-card-num">02</div>
+          <h3>What's hidden starts to appear.</h3>
+          <p>Patterns, beliefs, fears, and repeated ways of thinking begin to surface clearly.</p>
+        </div>
+        <div class="how-card">
+          <div class="how-card-num">03</div>
+          <h3>Over time, you see yourself more clearly.</h3>
+          <p>The same themes return across conversations until you can finally notice what has been there all along.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="territories">
+    <div class="territories-inner">
+      <div class="territories-header">
+        <span class="section-mark">Speak Freely</span>
+        <h2 class="territories-title">Choose the territory that feels <em>most present.</em></h2>
+      </div>
+      <div class="territories-grid">
+        <div class="t-cell"><div class="t-name">Relationships</div><div class="t-desc">How you connect and disconnect</div></div>
+        <div class="t-cell"><div class="t-name">Beliefs</div><div class="t-desc">The beliefs you inherited — from religion, culture, family</div></div>
+        <div class="t-cell"><div class="t-name">Family</div><div class="t-desc">Where patterns begin</div></div>
+        <div class="t-cell"><div class="t-name">Fear</div><div class="t-desc">What's driving you underneath</div></div>
+        <div class="t-cell"><div class="t-name">Desires</div><div class="t-desc">What you keep wanting</div></div>
+        <div class="t-cell"><div class="t-name">Identity</div><div class="t-desc">The story you tell about yourself</div></div>
+        <div class="t-cell"><div class="t-name">Sex & Lust</div><div class="t-desc">What you rarely examine honestly</div></div>
+        <div class="t-cell"><div class="t-name">Anger</div><div class="t-desc">What's hiding underneath it</div></div>
+        <div class="t-cell"><div class="t-name">Loneliness</div><div class="t-desc">What you feel but don't say</div></div>
+        <div class="t-cell"><div class="t-name">Purpose</div><div class="t-desc">What you're actually here for</div></div>
+        <div class="t-cell"><div class="t-name">Money & Worth</div><div class="t-desc">How value shapes your choices</div></div>
+        <div class="t-cell"><div class="t-name">Body & Self</div><div class="t-desc">How you see yourself</div></div>
+      </div>
+      <div class="territory-alt-divider">Or</div>
+      <div class="not-sure-card">
+        <div class="not-sure-card-text">
+          <div class="not-sure-card-title">Not sure yet.</div>
+          <div class="not-sure-card-desc">No label. No territory. Just start talking — Eariso will find what's there as you go.</div>
+        </div>
+        <div class="not-sure-card-cta">Just start talking →</div>
+      </div>
+    </div>
+  </div>
+  <div class="go-deeper">
+    <div class="go-deeper-inner">
+      <div class="go-deeper-header">
+        <span class="section-mark">Go Deeper</span>
+        <h2 class="go-deeper-title">See what's actually <em>building inside you.</em></h2>
+        <p class="go-deeper-intro">Speak Freely gives you the conversation. Go Deeper holds it — your patterns, your reflection, your week.</p>
+      </div>
+      <div class="deeper-cards">
+        <div class="deeper-card">
+          <h3>Your Pattern Map</h3>
+          <p>Month by month — which patterns appear most. Where they showed up. What you said in the exact moments they surfaced. In your own words.</p>
+        </div>
+        <div class="deeper-card">
+          <h3>Reflection Room</h3>
+          <p>When you're ready to understand a pattern — not just see it. Slower. Deeper. The conversation goes somewhere a regular conversation can't reach.</p>
+        </div>
+        <div class="deeper-card deeper-card-full">
+          <h3>Weekly Reflection</h3>
+          <p>Once a week — a conversation built around what you actually lived through. A decision you avoided. A reaction you didn't understand.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="padding: 100px 40px; border-top: 1px solid var(--rule);">
+    <div style="max-width: 720px; margin: 0 auto;">
+      <span class="section-mark">Privacy</span>
+      <h2 style="font-family: 'Cormorant Garamond', serif; font-size: clamp(36px, 4.5vw, 54px); font-weight: 400; line-height: 1.1; letter-spacing: -0.5px; margin-bottom: 26px;">Your conversations <em style="font-style: italic; color: var(--gold);">are yours.</em></h2>
+      <p style="font-family: 'Cormorant Garamond', serif; font-size: 19px; font-weight: 300; line-height: 1.7; color: var(--text-soft); margin-bottom: 44px; max-width: 600px;">Eariso is a space for seeing your own thinking. That only works if it's private. So we built it that way.</p>
+      <ul style="list-style: none; margin-bottom: 36px;">
+        <li style="padding: 12px 0; border-bottom: 1px solid var(--rule); font-size: 15px; color: var(--text-soft); display: flex; gap: 14px;">
+          <span style="color: var(--gold); flex-shrink: 0;">—</span> We never train AI models on your conversations
+        </li>
+        <li style="padding: 12px 0; border-bottom: 1px solid var(--rule); font-size: 15px; color: var(--text-soft); display: flex; gap: 14px;">
+          <span style="color: var(--gold); flex-shrink: 0;">—</span> We never sell your data to anyone
+        </li>
+        <li style="padding: 12px 0; border-bottom: 1px solid var(--rule); font-size: 15px; color: var(--text-soft); display: flex; gap: 14px;">
+          <span style="color: var(--gold); flex-shrink: 0;">—</span> We never share your conversations with third parties
+        </li>
+        <li style="padding: 12px 0; border-bottom: 1px solid var(--rule); font-size: 15px; color: var(--text-soft); display: flex; gap: 14px;">
+          <span style="color: var(--gold); flex-shrink: 0;">—</span> We never use your conversations for advertising
+        </li>
+        <li style="padding: 12px 0; font-size: 15px; color: var(--text-soft); display: flex; gap: 14px;">
+          <span style="color: var(--gold); flex-shrink: 0;">—</span> We never read your conversations manually
+        </li>
+      </ul>
+      <a onclick="showPage('privacy')" style="font-size: 12px; color: var(--gold); letter-spacing: 1.5px; cursor: pointer; text-decoration: none; border-bottom: 1px solid rgba(201,169,97,0.3); padding-bottom: 3px; text-transform: uppercase;">
+        Read our full privacy policy →
+      </a>
+    </div>
+  </div>
+  <div class="home-pricing" id="home-pricing">
+    <div class="home-pricing-inner">
+      <span class="section-mark">Pricing</span>
+      <h2 class="home-pricing-title">Go deeper <em>when you're ready.</em></h2>
+      <p class="pricing-free-note">Every conversation is free. Always.</p>
+      <div class="pricing-card">
+        <div class="price-label">Go Deeper</div>
+        <div class="price-amount"><span class="currency">£</span>12</div>
+        <div class="price-period">per month · cancel anytime</div>
+        <div class="price-rule"></div>
+        <ul class="price-features">
+          <li>Your Pattern Map</li>
+          <li>Reflection Room</li>
+          <li>Weekly Reflection</li>
+        </ul>
+        <button class="price-btn">Unlock Go Deeper</button>
+        <div class="fair-use-block">
+          <span class="fair-use-label">Fair Use</span>
+          <p>We keep usage fair and sustainable for everyone. If sessions become unusually high, we may gently limit access to preserve the quality of reflection for all users.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="home-closing">
+    <div style="max-width: 680px; margin: 0 auto;">
+      <span class="closing-eyebrow">Begin</span>
+      <h2 class="closing-title">See what's been driving your thinking.</h2>
+    </div>
+  </div>
+</div>
+<div class="page" id="page-about">
+  <div class="about-page">
+    <span class="section-mark">About</span>
+    <h1 class="about-title">Why Eariso <em>exists.</em></h1>
+    <div class="about-body">
+      <p>I built Eariso because I wanted a space for honest self-observation that did not rush to fix, label, or advise.</p>
+      <p>Eariso was made for the moments when you do not need another answer — you need to see what is really driving the question.</p>
+      <p>It is designed for self-observation, not just response. Eariso helps you notice the repeated fears, beliefs, assumptions, and patterns shaping how you think, decide, and relate.</p>
+      <p>Eariso exists to make hidden patterns visible. Quietly. Carefully. Without judgment.</p>
+    </div>
+    <div class="about-founder">
+      <span class="section-mark">Who built this</span>
+      <div class="founder-row">
+        <img src="founder.jpg" alt="Kalpesh, founder of Eariso" class="founder-photo">
+        <div class="founder-text">
+          <p>I'm Kalpesh. I built Eariso alone, from London. Today, bootstrapped — no investors yet.</p>
+          <a href="https://www.linkedin.com/in/kalpesh-parmar-84b32489" target="_blank" rel="noopener" class="founder-link">LinkedIn →</a>
+        </div>
+      </div>
+    </div>
+    <div class="about-measure">
+      <p>I measure success differently. Not by how long you stay — but by <em>whether you leave with more clarity than you arrived with.</em></p>
+    </div>
+  </div>
+</div>
+<div class="page" id="page-privacy">
+  <div class="legal-page">
+    <div class="legal-hero">
+      <span class="section-mark">Privacy</span>
+      <h1 class="legal-title">Your conversations <em>stay yours.</em></h1>
+      <p class="legal-meta">Last updated: April 2026</p>
+    </div>
+    <p class="legal-intro">Eariso is built for honest self-observation. Your privacy is central to that.</p>
+    <div class="legal-section">
+      <h2>What we never do</h2>
+      <ul>
+        <li>train AI models on your conversations</li>
+        <li>sell your data to anyone</li>
+        <li>share your conversations with third parties</li>
+        <li>use your conversations for advertising</li>
+        <li>read your conversations manually</li>
+      </ul>
+    </div>
+    <div class="legal-section">
+      <h2>What we collect</h2>
+      <p>When you create an account, we store your email address and login method — Google, Apple, or email. We do not ask for your name, location, age, or any other personal details beyond what is needed to identify your account.</p>
+      <p>When you use Eariso, your messages are processed in real time to generate responses. The system detects patterns from your conversations and stores:</p>
+      <ul>
+        <li>pattern name</li>
+        <li>category</li>
+        <li>topic</li>
+        <li>one short quote from your own words</li>
+        <li>a one-or-two-sentence summary of what was emotionally present</li>
+      </ul>
+      <p>This is what builds your Pattern Map.</p>
+    </div>
+    <div class="legal-section">
+      <h2>What data we hold</h2>
+      <p>Eariso holds only the following:</p>
+      <ul>
+        <li>your email address</li>
+        <li>your login method</li>
+        <li>your detected pattern data — pattern name, category, topic, and one quote from your own words</li>
+        <li>a short summary of each conversation (one to two sentences)</li>
+        <li>your conversation transcripts — for 30 days only, then automatically deleted</li>
+        <li>your usage data, including conversation counts and subscription status</li>
+      </ul>
+      <p>We do not store your full name, location, age, or payment details.</p>
+    </div>
+    <div class="legal-section">
+      <h2>How your data is processed</h2>
+      <p>Your messages are sent to a third-party AI provider for real-time processing. That provider does not store your conversations beyond short operational caching and does not use them to train their models.</p>
+      <p>Payments are handled by Stripe. We never see or store your card details.</p>
+    </div>
+    <div class="legal-section">
+      <h2>Your rights</h2>
+      <p>Eariso complies with UK GDPR. You have the right to access, correct, or delete any personal data we hold about you at any time. When you delete your account, all associated personal data is permanently removed within 30 days.</p>
+      <p>You can contact us at hello@eariso.ai to exercise any of your rights.</p>
+      <p>To request a copy of your data, email hello@eariso.ai. We will provide it in a machine-readable format within 30 days.</p>
+    </div>
+    <div class="legal-section">
+      <h2>Deleting your data</h2>
+      <p>You can delete your account and all associated data at any time from your account settings. This permanently removes your pattern history, your account, and everything linked to it.</p>
+    </div>
+    <div class="legal-section">
+      <h2>Data retention</h2>
+      <p>We keep your conversations for 30 days. After that, only your patterns and short summaries remain. Your Pattern Map is unaffected.</p>
+      <p>If your account stays inactive for 12 months — no logins and no conversations — we will permanently delete your account and all associated data.</p>
+    </div>
+    <div class="legal-section">
+      <h2>Children</h2>
+      <p>Eariso is not intended for anyone under 18. We do not knowingly collect data from minors. By creating an account, you confirm that you are at least 18 years old.</p>
+    </div>
+    <div class="legal-section">
+      <h2>Changes to this policy</h2>
+      <p>We may update this policy. If we make significant changes, we will communicate them via email or in-app notification before they take effect.</p>
+    </div>
+    <div class="legal-section">
+      <h2>Contact</h2>
+      <p>hello@eariso.ai</p>
+    </div>
+  </div>
+</div>
+<div class="page" id="page-terms">
+  <div class="legal-page">
+    <div class="legal-hero">
+      <span class="section-mark">Terms of Service</span>
+      <h1 class="legal-title">Simple. Fair. <em>Honest.</em></h1>
+      <p class="legal-meta">Last updated: April 2026</p>
+    </div>
+    <div class="legal-section">
+      <h2>What Eariso is</h2>
+      <p>Eariso is a pattern intelligence tool designed to help people see their own thinking more clearly.</p>
+      <p>It is not therapy. It is not medical or psychological advice. It is not a crisis support service. It is not a replacement for professional mental health support.</p>
+      <p>If you are experiencing a mental health crisis or feel unsafe, please seek professional help immediately.</p>
+    </div>
+    <div class="legal-section">
+      <h2>What Eariso is not</h2>
+      <ul>
+        <li>a therapist or counsellor</li>
+        <li>medical or psychological advice</li>
+        <li>a crisis or emergency support service</li>
+        <li>a substitute for professional care</li>
+      </ul>
+      <p>You are responsible for your own wellbeing. Eariso does not diagnose, treat, or manage health conditions.</p>
+    </div>
+    <div class="legal-section">
+      <h2>No guarantees</h2>
+      <p>Eariso is a tool for reflection, not a promise of change. We do not guarantee specific outcomes from using the service.</p>
+    </div>
+    <div class="legal-section">
+      <h2>Who can use Eariso</h2>
+      <p>You must be at least 18 years old to use Eariso. By creating an account, you confirm that you meet this requirement. Eariso is not intended for children or anyone under 18.</p>
+    </div>
+    <div class="legal-section">
+      <h2>Your account</h2>
+      <p>You are responsible for keeping your account credentials secure and for all activity that happens under your account. If you believe your account has been compromised, contact us at hello@eariso.ai as soon as possible.</p>
+    </div>
+    <div class="legal-section">
+      <h2>Usage</h2>
+      <p>Eariso is designed for genuine, thoughtful reflection. You agree not to use Eariso for any illegal purpose, to attempt to reverse-engineer or extract the underlying AI system, or to abuse the service through automated or excessive requests.</p>
+      <p>We reserve the right to limit or suspend access for accounts that consistently violate these expectations.</p>
+    </div>
+    <div class="legal-section">
+      <h2>Payment and subscription</h2>
+      <p>Access to Go Deeper costs £12 per month. Payment is handled by Stripe on the Eariso website. You are charged on the same date each month, starting from your first subscription. You can cancel your subscription at any time from your account settings. Cancellation takes effect at the end of your current billing period.</p>
+      <p>By subscribing to Go Deeper, you request immediate access to the service and consent to begin using it right away. You acknowledge that, in doing so, you waive your statutory 14-day right to cancel under the Consumer Contracts Regulations 2013 once the service has been provided. If you cancel, your subscription remains active until the end of your current billing period and will not renew.</p>
+    </div>
+    <div class="legal-section">
+      <h2>What happens when you stop paying</h2>
+      <p>If your subscription ends, your account returns to the free tier. Your Pattern Map data is kept for 30 days, then permanently deleted. Your account remains active, but access to Go Deeper features is removed until you subscribe again.</p>
+    </div>
+    <div class="legal-section">
+      <h2>Your content</h2>
+      <p>What you share in Eariso belongs to you. We do not claim ownership of your conversations or your pattern data. You can delete your account and all associated data at any time.</p>
+    </div>
+    <div class="legal-section">
+      <h2>Intellectual property</h2>
+      <p>The Eariso name, product design, and underlying system are the intellectual property of Eariso. You may not copy, reproduce, or reuse any part of this product without written permission.</p>
+    </div>
+    <div class="legal-section">
+      <h2>No warranty</h2>
+      <p>The service is provided "as is" without warranties of any kind, express or implied.</p>
+    </div>
+    <div class="legal-section">
+      <h2>Limitation of liability</h2>
+      <p>To the fullest extent permitted by law, Eariso is not liable for any indirect, incidental, consequential, or special damages, including emotional distress, arising from use of the service. Our total liability is limited to the fees you paid in the previous 12 months.</p>
+    </div>
+    <div class="legal-section">
+      <h2>Governing law</h2>
+      <p>These terms are governed by the laws of England and Wales. Disputes will be resolved in the courts of England and Wales.</p>
+    </div>
+    <div class="legal-section">
+      <h2>Changes to these terms</h2>
+      <p>We may update these terms from time to time. Continued use of Eariso after changes means you accept the updated terms. Significant changes will be communicated via email or in-app notification.</p>
+    </div>
+    <div class="legal-section">
+      <h2>Contact</h2>
+      <p>hello@eariso.ai</p>
+    </div>
+  </div>
+</div>
+<footer>
+  <div class="footer-inner">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a class="brand" onclick="showPage('home')">
+          <img src="logo.png" alt="Eariso logo" class="brand-logo">
+          <span class="brand-text">Eariso</span>
+        </a>
+        <p>The AI Mirror that shows you your own thinking.</p>
+      </div>
+      <div class="footer-links">
+        <div class="footer-col">
+          <h4>Product</h4>
+          <a onclick="showPage('home'); setTimeout(()=>document.getElementById('home-pricing').scrollIntoView({behavior:'smooth'}),100)">Pricing</a>
+          <a onclick="showPage('about')">About</a>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <a onclick="showPage('privacy')">Privacy</a>
+          <a onclick="showPage('terms')">Terms</a>
+        </div>
+        <div class="footer-col">
+          <h4>Contact</h4>
+          <a href="mailto:hello@eariso.ai">hello@eariso.ai</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Eariso. All rights reserved.</p>
+      <em>Made for those who want to see clearly.</em>
+    </div>
+  </div>
+</footer>
+<script>
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const t = document.getElementById('page-' + id);
+    if (t) {
+      t.classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'instant' });
+    }
+    document.querySelectorAll('.nav-links a[data-page]').forEach(a => {
+      a.classList.toggle('active', a.dataset.page === id);
+    });
+    document.getElementById('navLinks').classList.remove('open');
+  }
+  function toggleNav() {
+    document.getElementById('navLinks').classList.toggle('open');
+  }
+</script>
+</body>
+</html>
