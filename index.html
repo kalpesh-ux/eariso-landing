@@ -494,27 +494,18 @@
     background: var(--gold);
     margin-bottom: 28px;
   }
-  .price-features {
-    list-style: none;
-    margin-bottom: 36px;
-  }
-  .price-features li {
-    padding: 10px 0;
+  .price-blurb {
+    padding: 18px 0 30px;
     color: var(--text-soft);
-    font-size: 15px;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    border-bottom: 1px solid var(--rule);
+    font-size: 17px;
+    line-height: 1.65;
     font-family: 'Cormorant Garamond', serif;
     font-weight: 400;
-  }
-  .price-features li:last-child { border-bottom: none; }
-  .price-features li::before {
-    content: '◆';
-    color: var(--gold);
-    font-size: 7px;
-    flex-shrink: 0;
+    text-align: center;
+    margin-bottom: 18px;
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    margin-top: 6px;
   }
   .price-btn {
     display: block;
@@ -936,19 +927,15 @@
   <div class="home-pricing" id="home-pricing">
     <div class="home-pricing-inner">
       <span class="section-mark">Pricing</span>
-      <h2 class="home-pricing-title">Go deeper <em>when you're ready.</em></h2>
-      <p class="pricing-free-note">Every conversation is free. Always.</p>
+      <h2 class="home-pricing-title">Every conversation is <em>free. Always.</em></h2>
+      <p class="pricing-free-note">Pattern Map, Reflection Room, Weekly Reflection — all yours from day one.</p>
       <div class="pricing-card">
         <div class="price-label">Go Deeper</div>
         <div class="price-amount"><span class="currency">£</span>12</div>
         <div class="price-period">per month · cancel anytime</div>
         <div class="price-rule"></div>
-        <ul class="price-features">
-          <li>Your Pattern Map</li>
-          <li>Reflection Room</li>
-          <li>Weekly Reflection</li>
-        </ul>
-        <button class="price-btn">Unlock Go Deeper</button>
+        <p class="price-blurb">Some conversations want more time. Go Deeper opens three times the daily room, whenever you need it.</p>
+        <button class="price-btn">Start Go Deeper</button>
         <div class="fair-use-block">
           <span class="fair-use-label">Fair Use</span>
           <p>We keep usage fair and sustainable for everyone. If sessions become unusually high, we may gently limit access to preserve the quality of reflection for all users.</p>
