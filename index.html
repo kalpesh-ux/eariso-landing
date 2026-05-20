@@ -41,6 +41,9 @@
     -webkit-font-smoothing: antialiased;
     font-size: 16px;
     overflow-x: hidden;
+    /* Prevent Android Chrome from auto-scaling text, which breaks nav layout */
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
   }
   nav {
     position: fixed;
@@ -67,6 +70,7 @@
     text-decoration: none;
     color: var(--gold);
     min-width: 0;
+    flex-shrink: 1;
   }
   .brand-logo {
     width: 46px;
@@ -952,7 +956,7 @@
     .nav-links a { font-size: 10px; letter-spacing: 1px; }
     .nav-store { display: none; }
     .nav-toggle { display: none; }
-    .hero { padding: 60px 24px 50px; }
+    .hero { padding: 40px 24px 36px; }
     .hero-logo { width: 96px; height: 96px; }
     .how-it-works, .territories, .go-deeper,
     .home-pricing, .home-closing { padding: 70px 24px; }
