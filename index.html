@@ -23,6 +23,15 @@
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { scroll-behavior: smooth; }
+  .grain-overlay {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 200;
+    opacity: 0.07;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
   body {
     background: var(--bg);
     color: var(--text);
@@ -150,9 +159,14 @@
     position: absolute;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 800px; height: 800px;
-    background: radial-gradient(circle, rgba(201,169,97,0.05) 0%, transparent 70%);
+    width: 1100px; height: 1100px;
+    background: radial-gradient(circle, rgba(201,169,97,0.09) 0%, rgba(201,169,97,0.03) 35%, transparent 70%);
     pointer-events: none;
+    animation: heroBreath 11s ease-in-out infinite;
+  }
+  @keyframes heroBreath {
+    0%, 100% { opacity: 0.55; transform: translate(-50%, -50%) scale(1); }
+    50%      { opacity: 1;    transform: translate(-50%, -50%) scale(1.06); }
   }
   .hero-logo {
     width: 92px;
@@ -193,7 +207,21 @@
     opacity: 0;
     animation: fadeUp 1s 0.25s forwards;
   }
-  .hero-title em { font-style: italic; color: var(--gold); }
+  .hero-title em {
+    font-style: italic;
+    color: var(--gold);
+    background: linear-gradient(100deg, #C9A961 0%, #C9A961 30%, #F0DDA8 50%, #C9A961 70%, #C9A961 100%);
+    background-size: 220% 100%;
+    background-position: 0% 50%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: goldShimmer 9s ease-in-out infinite;
+  }
+  @keyframes goldShimmer {
+    0%, 100% { background-position: 0% 50%; }
+    50%      { background-position: 100% 50%; }
+  }
   .hero-sub {
     font-size: 17px;
     color: var(--text-soft);
@@ -321,7 +349,26 @@
     border-bottom: 1px solid var(--rule);
     transition: background 0.3s;
   }
-  .t-cell:hover { background: rgba(201,169,97,0.04); }
+  .t-cell {
+    position: relative;
+  }
+  .t-cell::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid transparent;
+    pointer-events: none;
+    transition: border-color 0.4s, box-shadow 0.4s;
+  }
+  .t-cell:hover {
+    background: rgba(201,169,97,0.05);
+    transform: translateY(-1px);
+    transition: background 0.3s, transform 0.3s;
+  }
+  .t-cell:hover::after {
+    border-color: rgba(201,169,97,0.35);
+    box-shadow: inset 0 0 24px rgba(201,169,97,0.06);
+  }
   .t-name {
     font-family: 'Cormorant Garamond', serif;
     font-size: 18px;
@@ -806,6 +853,97 @@
     color: var(--text-soft);
     font-size: 14px;
   }
+  /* ────────── Pattern Map preview ────────── */
+  .pattern-preview {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    padding: 100px 40px 110px;
+    border-top: 1px solid var(--rule);
+    background: radial-gradient(ellipse at 50% 40%, #100f0d 0%, var(--bg) 60%);
+    position: relative;
+    overflow: hidden;
+  }
+  .pattern-preview::before {
+    content: '';
+    position: absolute;
+    top: -20%; left: 50%;
+    transform: translateX(-50%);
+    width: 1400px; height: 900px;
+    background: radial-gradient(ellipse at center, rgba(92,142,189,0.05) 0%, rgba(201,169,97,0.03) 30%, transparent 65%);
+    pointer-events: none;
+    animation: skyDrift 22s ease-in-out infinite;
+  }
+  @keyframes skyDrift {
+    0%, 100% { opacity: 0.7; transform: translateX(-50%) scale(1); }
+    50%      { opacity: 1;   transform: translateX(-50%) scale(1.08); }
+  }
+  .pattern-preview-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .pattern-preview-arrow {
+    position: absolute;
+    top: 0; right: 0;
+    width: 38px; height: 38px;
+    border: 1px solid var(--rule);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dim);
+    transition: all 0.4s;
+    pointer-events: none;
+  }
+  .pattern-preview:hover .pattern-preview-arrow {
+    border-color: var(--gold);
+    color: var(--gold);
+    transform: rotate(0deg) scale(1.05);
+  }
+  .constellation-wrap {
+    width: 100%;
+    aspect-ratio: 1000 / 560;
+    position: relative;
+  }
+  .constellation {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+  .constellation .thread {
+    stroke-width: 1;
+    stroke-opacity: 0.18;
+    transition: stroke-opacity 0.6s;
+  }
+  .pattern-preview:hover .constellation .thread { stroke-opacity: 0.32; }
+  .constellation .star-core {
+    filter: drop-shadow(0 0 6px currentColor);
+  }
+  .constellation .star-halo { animation: starPulse 6s ease-in-out infinite; }
+  .constellation g.star:nth-of-type(2) .star-halo { animation-delay: 0.6s; }
+  .constellation g.star:nth-of-type(3) .star-halo { animation-delay: 1.2s; }
+  .constellation g.star:nth-of-type(4) .star-halo { animation-delay: 1.8s; }
+  .constellation g.star:nth-of-type(5) .star-halo { animation-delay: 2.4s; }
+  .constellation g.star:nth-of-type(6) .star-halo { animation-delay: 3.0s; }
+  .constellation g.star:nth-of-type(7) .star-halo { animation-delay: 3.6s; }
+  .constellation g.star:nth-of-type(8) .star-halo { animation-delay: 4.2s; }
+  @keyframes starPulse {
+    0%, 100% { opacity: 0.85; }
+    50%      { opacity: 1; }
+  }
+  .constellation .star-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 15px;
+    fill: var(--text-soft);
+    letter-spacing: 0.3px;
+  }
+  @media (max-width: 860px) {
+    .pattern-preview { padding: 60px 20px 70px; }
+    .constellation .star-name { font-size: 13px; }
+    .pattern-preview-arrow { width: 32px; height: 32px; }
+  }
   @media (max-width: 860px) {
     .nav-inner { padding: 14px 16px; gap: 10px; }
     .brand-logo { width: 28px; height: 28px; }
@@ -842,6 +980,7 @@
 </style>
 </head>
 <body>
+<div class="grain-overlay" aria-hidden="true"></div>
 <nav>
   <div class="nav-inner">
     <a class="brand" onclick="showPage('home')">
@@ -896,6 +1035,101 @@
       </div>
     </div>
   </div>
+  <a class="pattern-preview" href="./pattern-map-preview.html" target="_blank" rel="noopener" aria-label="Open the Pattern Map example">
+    <div class="pattern-preview-inner">
+      <div class="pattern-preview-arrow" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 11L11 3M11 3H5M11 3V9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="constellation-wrap">
+        <svg class="constellation" viewBox="0 0 1000 560" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <radialGradient id="glow-fear">
+              <stop offset="0%"  stop-color="#d96550" stop-opacity="0.85"/>
+              <stop offset="30%" stop-color="#d96550" stop-opacity="0.35"/>
+              <stop offset="70%" stop-color="#d96550" stop-opacity="0.08"/>
+              <stop offset="100%" stop-color="#d96550" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="glow-identity">
+              <stop offset="0%"  stop-color="#5c8ebd" stop-opacity="0.85"/>
+              <stop offset="30%" stop-color="#5c8ebd" stop-opacity="0.35"/>
+              <stop offset="70%" stop-color="#5c8ebd" stop-opacity="0.08"/>
+              <stop offset="100%" stop-color="#5c8ebd" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="glow-emotional">
+              <stop offset="0%"  stop-color="#c47a8a" stop-opacity="0.85"/>
+              <stop offset="30%" stop-color="#c47a8a" stop-opacity="0.35"/>
+              <stop offset="70%" stop-color="#c47a8a" stop-opacity="0.08"/>
+              <stop offset="100%" stop-color="#c47a8a" stop-opacity="0"/>
+            </radialGradient>
+            <radialGradient id="glow-belief">
+              <stop offset="0%"  stop-color="#c89856" stop-opacity="0.85"/>
+              <stop offset="30%" stop-color="#c89856" stop-opacity="0.35"/>
+              <stop offset="70%" stop-color="#c89856" stop-opacity="0.08"/>
+              <stop offset="100%" stop-color="#c89856" stop-opacity="0"/>
+            </radialGradient>
+          </defs>
+          <line class="thread" x1="350" y1="220" x2="620" y2="180" stroke="#9a9489"/>
+          <line class="thread" x1="350" y1="220" x2="800" y2="300" stroke="#9a9489"/>
+          <line class="thread" x1="620" y1="180" x2="800" y2="300" stroke="#9a9489"/>
+          <line class="thread" x1="620" y1="180" x2="710" y2="400" stroke="#9a9489"/>
+          <line class="thread" x1="620" y1="180" x2="510" y2="340" stroke="#9a9489"/>
+          <line class="thread" x1="710" y1="400" x2="510" y2="340" stroke="#9a9489"/>
+          <line class="thread" x1="350" y1="220" x2="830" y2="120" stroke="#9a9489"/>
+          <line class="thread" x1="350" y1="220" x2="170" y2="120" stroke="#9a9489"/>
+          <g class="star">
+            <circle class="star-halo" cx="350" cy="220" r="78" fill="url(#glow-fear)"/>
+            <circle class="star-halo" cx="350" cy="220" r="44" fill="url(#glow-fear)" opacity="0.7"/>
+            <circle class="star-core" cx="350" cy="220" r="6"  fill="#f4b09e"/>
+            <text class="star-name" x="350" y="270" text-anchor="middle">Fear of judgment</text>
+          </g>
+          <g class="star">
+            <circle class="star-halo" cx="620" cy="180" r="60" fill="url(#glow-identity)"/>
+            <circle class="star-halo" cx="620" cy="180" r="34" fill="url(#glow-identity)" opacity="0.7"/>
+            <circle class="star-core" cx="620" cy="180" r="5"  fill="#a8cce8"/>
+            <text class="star-name" x="620" y="225" text-anchor="middle">People pleasing</text>
+          </g>
+          <g class="star">
+            <circle class="star-halo" cx="800" cy="300" r="46" fill="url(#glow-identity)"/>
+            <circle class="star-halo" cx="800" cy="300" r="26" fill="url(#glow-identity)" opacity="0.7"/>
+            <circle class="star-core" cx="800" cy="300" r="4"  fill="#a8cce8"/>
+            <text class="star-name" x="800" y="338" text-anchor="middle">Self doubt</text>
+          </g>
+          <g class="star">
+            <circle class="star-halo" cx="710" cy="400" r="38" fill="url(#glow-identity)"/>
+            <circle class="star-halo" cx="710" cy="400" r="22" fill="url(#glow-identity)" opacity="0.7"/>
+            <circle class="star-core" cx="710" cy="400" r="3.5"  fill="#a8cce8"/>
+            <text class="star-name" x="710" y="432" text-anchor="middle">Comparison</text>
+          </g>
+          <g class="star">
+            <circle class="star-halo" cx="510" cy="340" r="38" fill="url(#glow-identity)"/>
+            <circle class="star-halo" cx="510" cy="340" r="22" fill="url(#glow-identity)" opacity="0.7"/>
+            <circle class="star-core" cx="510" cy="340" r="3.5"  fill="#a8cce8"/>
+            <text class="star-name" x="510" y="372" text-anchor="middle">Validation seeking</text>
+          </g>
+          <g class="star">
+            <circle class="star-halo" cx="220" cy="420" r="46" fill="url(#glow-emotional)"/>
+            <circle class="star-halo" cx="220" cy="420" r="26" fill="url(#glow-emotional)" opacity="0.7"/>
+            <circle class="star-core" cx="220" cy="420" r="4"  fill="#dba6b3"/>
+            <text class="star-name" x="220" y="458" text-anchor="middle">Shame</text>
+          </g>
+          <g class="star">
+            <circle class="star-halo" cx="830" cy="120" r="34" fill="url(#glow-belief)"/>
+            <circle class="star-halo" cx="830" cy="120" r="20" fill="url(#glow-belief)" opacity="0.7"/>
+            <circle class="star-core" cx="830" cy="120" r="3.5"  fill="#e5c08c"/>
+            <text class="star-name" x="830" y="152" text-anchor="middle">Inherited belief</text>
+          </g>
+          <g class="star">
+            <circle class="star-halo" cx="170" cy="120" r="38" fill="url(#glow-fear)"/>
+            <circle class="star-halo" cx="170" cy="120" r="22" fill="url(#glow-fear)" opacity="0.7"/>
+            <circle class="star-core" cx="170" cy="120" r="3.5"  fill="#f4b09e"/>
+            <text class="star-name" x="170" y="152" text-anchor="middle">Avoidance</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </a>
   <div class="territories">
     <div class="territories-inner">
       <div class="territories-header">

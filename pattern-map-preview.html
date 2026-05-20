@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eariso — Pattern Map (constellation)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07070b;
+    --bg-deep: #050507;
+    --text: #e8e4dc;
+    --text-soft: #9a9489;
+    --text-dim: #5a564f;
+    --rule: rgba(255, 250, 240, 0.06);
+    --rule-strong: rgba(255, 250, 240, 0.12);
+    --gold: #c8a86b;
+    --gold-soft: #a88c54;
+    --coral: #d96550;       /* fear */
+    --blue:  #5c8ebd;       /* identity */
+    --pink:  #c47a8a;       /* emotional */
+    --amber: #c89856;       /* belief */
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { height: 100%; }
+  body {
+    background:
+      radial-gradient(ellipse at 50% 0%, #0d0d16 0%, #07070b 45%, #050507 100%);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+    letter-spacing: 0.005em;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ============ HEADER (matches your existing header) ============ */
+  .app-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 40px;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    z-index: 2;
+  }
+  .menu-icon { width: 18px; height: 14px; display: flex; flex-direction: column; justify-content: space-between; cursor: pointer; }
+  .menu-icon span { display: block; height: 1px; background: var(--text-soft); }
+  .brand {
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--gold);
+    font-weight: 400;
+    font-size: 17px;
+    letter-spacing: 0.42em;
+  }
+  .avatar {
+    width: 30px; height: 30px; border-radius: 50%;
+    border: 1px solid var(--text-dim);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    color: var(--text-soft);
+    font-size: 13px;
+    background: rgba(255,250,240,0.02);
+  }
+
+  /* ============ PAGE LAYOUT ============ */
+  .page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 56px 40px 80px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .page-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 42px;
+    line-height: 1;
+    color: var(--text);
+    letter-spacing: -0.01em;
+  }
+  .page-sub {
+    margin-top: 10px;
+    color: var(--text-dim);
+    font-size: 13px;
+    font-style: italic;
+    letter-spacing: 0.04em;
+  }
+
+  /* ============ THE SKY (hero constellation) ============ */
+  .sky-wrap {
+    margin-top: 48px;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 1000 / 560;
+    border-radius: 4px;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 70% 55% at 50% 50%,
+        rgba(38, 38, 58, 0.45) 0%,
+        rgba(15, 15, 24, 0.55) 45%,
+        rgba(5, 5, 8, 0.85) 100%);
+  }
+  /* faint cosmic dust */
+  .sky-wrap::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1.2px 1.2px at 12% 22%, rgba(255,250,240,0.22), transparent 50%),
+      radial-gradient(1px 1px at 28% 78%, rgba(255,250,240,0.16), transparent 50%),
+      radial-gradient(1px 1px at 70% 14%, rgba(255,250,240,0.22), transparent 50%),
+      radial-gradient(1px 1px at 84% 65%, rgba(255,250,240,0.13), transparent 50%),
+      radial-gradient(1px 1px at 42% 88%, rgba(255,250,240,0.15), transparent 50%),
+      radial-gradient(1px 1px at 56% 38%, rgba(255,250,240,0.10), transparent 50%),
+      radial-gradient(1px 1px at 92% 30%, rgba(255,250,240,0.18), transparent 50%),
+      radial-gradient(1px 1px at 18% 56%, rgba(255,250,240,0.12), transparent 50%),
+      radial-gradient(1px 1px at 36% 42%, rgba(255,250,240,0.10), transparent 50%),
+      radial-gradient(1px 1px at 64% 82%, rgba(255,250,240,0.10), transparent 50%),
+      radial-gradient(1px 1px at 6%  68%, rgba(255,250,240,0.14), transparent 50%),
+      radial-gradient(1.2px 1.2px at 78% 48%, rgba(255,250,240,0.18), transparent 50%);
+    pointer-events: none;
+  }
+  .constellation { width: 100%; height: 100%; display: block; }
+
+  /* star label */
+  .star-name {
+    font-family: 'Cormorant Garamond', serif;
+    fill: var(--text);
+    font-size: 13px;
+    font-weight: 400;
+    opacity: 0.78;
+    transition: opacity 350ms ease;
+    pointer-events: none;
+    letter-spacing: 0.02em;
+  }
+  .star:hover .star-name { opacity: 1; }
+
+  /* star breathing animation */
+  .star-halo {
+    transform-origin: center;
+    animation: breath 7s ease-in-out infinite;
+  }
+  .star:nth-of-type(2n) .star-halo { animation-duration: 8.4s; animation-delay: -1.6s; }
+  .star:nth-of-type(3n) .star-halo { animation-duration: 6.2s; animation-delay: -2.7s; }
+  .star:nth-of-type(4n) .star-halo { animation-duration: 9.1s; animation-delay: -3.4s; }
+  .star:nth-of-type(5n) .star-halo { animation-duration: 7.8s; animation-delay: -4.2s; }
+
+  @keyframes breath {
+    0%, 100% { opacity: 0.7; }
+    50%      { opacity: 1.0; }
+  }
+
+  .thread {
+    stroke-width: 0.6;
+    fill: none;
+    opacity: 0.10;
+    transition: opacity 450ms ease, stroke-width 450ms ease;
+  }
+  .thread.lit { opacity: 0.55; stroke-width: 1; }
+
+  .star { cursor: pointer; }
+  .star.dim .star-halo { opacity: 0.3; }
+  .star.dim .star-core { opacity: 0.45; }
+  .star.dim .star-name { opacity: 0.3; }
+
+  /* sky overlay: tooltip when hovering a star */
+  .sky-tip {
+    position: absolute;
+    pointer-events: none;
+    padding: 10px 14px;
+    background: rgba(8, 8, 12, 0.88);
+    border: 1px solid var(--rule-strong);
+    border-radius: 2px;
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 12px));
+    transition: opacity 200ms ease;
+    min-width: 180px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .sky-tip.show { opacity: 1; }
+  .sky-tip-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 17px;
+    color: var(--text);
+    margin-bottom: 4px;
+    letter-spacing: 0.01em;
+  }
+  .sky-tip-meaning {
+    color: var(--text-soft);
+    font-style: italic;
+    font-size: 11.5px;
+    margin-bottom: 8px;
+    line-height: 1.5;
+  }
+  .sky-tip-meta {
+    color: var(--text-dim);
+    font-size: 10.5px;
+    letter-spacing: 0.06em;
+  }
+  .sky-tip-meta .sep { margin: 0 6px; opacity: 0.5; }
+
+  /* ============ LEGEND ============ */
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 36px;
+    margin-top: 22px;
+    padding-top: 2px;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 9px;
+    color: var(--text-dim);
+    font-size: 10.5px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+  }
+  .legend-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    box-shadow: 0 0 10px currentColor;
+  }
+  .legend-fear      { color: var(--coral); }
+  .legend-identity  { color: var(--blue); }
+  .legend-emotional { color: var(--pink); }
+  .legend-belief    { color: var(--amber); }
+
+  /* ============ ALL PATTERNS LIST ============ */
+  .section-label {
+    margin-top: 84px;
+    color: var(--text-dim);
+    font-size: 10.5px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+  }
+  .pattern-list { margin-top: 18px; }
+  .pattern-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 18px;
+    padding: 22px 4px;
+    border-bottom: 1px solid var(--rule);
+    cursor: pointer;
+    transition: padding 350ms ease, background 350ms ease;
+  }
+  .pattern-row:hover {
+    padding-left: 14px;
+    background: linear-gradient(to right, rgba(255,250,240,0.018), transparent);
+  }
+  .row-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    box-shadow: 0 0 8px currentColor;
+  }
+  .row-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--text);
+    letter-spacing: 0.005em;
+  }
+  .row-meta {
+    color: var(--text-dim);
+    font-size: 11.5px;
+    font-style: italic;
+    letter-spacing: 0.04em;
+  }
+  .row-meta .sep { margin: 0 8px; opacity: 0.6; }
+
+  .footnote {
+    margin-top: 56px;
+    color: var(--text-dim);
+    font-size: 11px;
+    font-style: italic;
+    text-align: center;
+    line-height: 1.75;
+    max-width: 520px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  /* ============ SECTION DIVIDER ============ */
+  .screen-divider {
+    margin: 140px auto 60px;
+    text-align: center;
+  }
+  .screen-divider-line {
+    display: inline-block;
+    width: 40px; height: 1px;
+    background: var(--rule-strong);
+    vertical-align: middle;
+    margin: 0 14px;
+  }
+  .screen-divider-label {
+    color: var(--text-dim);
+    font-size: 10px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    vertical-align: middle;
+  }
+
+  /* ============ PATTERN DETAIL (second screen) ============ */
+  .detail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 22px 40px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .back-icon {
+    color: var(--text-soft);
+    font-size: 22px;
+    cursor: pointer;
+    line-height: 1;
+    font-weight: 200;
+  }
+  .detail-eyebrow {
+    color: var(--text-dim);
+    font-size: 10.5px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  .detail-page {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 60px 40px 80px;
+  }
+
+  .detail-eyebrow-line {
+    color: var(--text-dim);
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+  .detail-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 56px;
+    line-height: 1;
+    margin-top: 14px;
+    letter-spacing: -0.015em;
+  }
+  .detail-meaning {
+    margin-top: 18px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 20px;
+    color: var(--text-soft);
+    font-weight: 300;
+    letter-spacing: 0.01em;
+    max-width: 640px;
+    line-height: 1.45;
+  }
+  .detail-meta-row {
+    margin-top: 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: var(--text-dim);
+    font-size: 11.5px;
+    letter-spacing: 0.05em;
+  }
+  .badge {
+    padding: 5px 12px;
+    border-radius: 100px;
+    font-size: 10.5px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    border: 1px solid;
+    background: rgba(255,255,255,0.015);
+  }
+  .badge-fear      { color: var(--coral); border-color: rgba(217,101,80,0.4); }
+  .badge-identity  { color: var(--blue);  border-color: rgba(92,142,189,0.4); }
+  .badge-emotional { color: var(--pink);  border-color: rgba(196,122,138,0.4); }
+  .badge-belief    { color: var(--amber); border-color: rgba(200,152,86,0.4); }
+
+  /* hero star + theme orbit */
+  .hero-star-wrap {
+    margin-top: 48px;
+    position: relative;
+    width: 100%;
+    height: 360px;
+    border-radius: 4px;
+    overflow: hidden;
+    background:
+      radial-gradient(ellipse 60% 70% at 50% 50%,
+        rgba(45, 30, 25, 0.4) 0%,
+        rgba(15, 12, 10, 0.5) 50%,
+        rgba(5, 5, 8, 0.85) 100%);
+  }
+  .hero-star-wrap::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 14% 28%, rgba(255,250,240,0.14), transparent 50%),
+      radial-gradient(1px 1px at 88% 62%, rgba(255,250,240,0.16), transparent 50%),
+      radial-gradient(1px 1px at 50% 18%, rgba(255,250,240,0.12), transparent 50%),
+      radial-gradient(1px 1px at 70% 82%, rgba(255,250,240,0.12), transparent 50%),
+      radial-gradient(1px 1px at 24% 72%, rgba(255,250,240,0.10), transparent 50%);
+    pointer-events: none;
+  }
+
+  /* intensity waveform */
+  .intensity-block { margin-top: 70px; }
+  .intensity-label {
+    color: var(--text-dim);
+    font-size: 10.5px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+  }
+  .intensity-wave {
+    margin-top: 22px;
+    width: 100%;
+    height: 140px;
+  }
+  .intensity-axis {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    color: var(--text-dim);
+    font-size: 10.5px;
+    font-style: italic;
+    letter-spacing: 0.04em;
+  }
+
+  /* themes */
+  .themes-block { margin-top: 60px; }
+  .themes-row {
+    margin-top: 22px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .chip {
+    padding: 8px 16px;
+    border: 1px solid var(--rule-strong);
+    border-radius: 100px;
+    color: var(--text-soft);
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    background: rgba(255,250,240,0.012);
+    cursor: pointer;
+    transition: color 250ms ease, border-color 250ms ease;
+  }
+  .chip:hover {
+    color: var(--text);
+    border-color: var(--text-dim);
+  }
+
+  /* recent moment */
+  .moment-block { margin-top: 60px; }
+  .moment-quote {
+    margin-top: 22px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 26px;
+    line-height: 1.5;
+    color: var(--text);
+    font-weight: 300;
+    padding-left: 24px;
+    border-left: 1px solid var(--coral);
+    max-width: 740px;
+  }
+  .moment-attr {
+    margin-top: 14px;
+    margin-left: 25px;
+    color: var(--text-dim);
+    font-size: 11px;
+    font-style: italic;
+    letter-spacing: 0.04em;
+  }
+
+  /* CTA */
+  .cta-row {
+    margin-top: 70px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: center;
+  }
+  .cta {
+    padding: 18px 60px;
+    border: 1px solid var(--gold-soft);
+    border-radius: 2px;
+    background: transparent;
+    color: var(--gold);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 350ms ease, color 350ms ease;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+  }
+  .cta:hover {
+    background: rgba(200, 168, 107, 0.06);
+    color: var(--text);
+  }
+
+  /* annotation note (only on this mockup file, won't be in real app) */
+  .designer-note {
+    max-width: 720px;
+    margin: 80px auto 0;
+    padding: 24px 28px;
+    background: rgba(255,250,240,0.018);
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    color: var(--text-soft);
+    font-size: 12.5px;
+    line-height: 1.7;
+  }
+  .designer-note b {
+    color: var(--gold);
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-size: 10.5px;
+    display: block;
+    margin-bottom: 10px;
+  }
+  .designer-note em { color: var(--text-dim); font-style: italic; }
+
+  /* ============ MOBILE PHONE FRAMES ============ */
+  .phones-row {
+    display: flex;
+    gap: 32px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 40px;
+  }
+  .phone-stack { text-align: center; }
+  .phone-label {
+    color: var(--text-dim);
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .phone {
+    width: 340px;
+    height: 720px;
+    background: #0a0a10;
+    border-radius: 36px;
+    border: 1px solid var(--rule-strong);
+    padding: 8px;
+    margin: 0 auto;
+    box-shadow: 0 0 80px rgba(0,0,0,0.55), inset 0 0 1px rgba(255,250,240,0.05);
+    position: relative;
+  }
+  .phone-inner {
+    width: 100%; height: 100%;
+    border-radius: 28px;
+    overflow: hidden;
+    background: var(--bg-deep);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+  }
+  .phone-notch {
+    position: absolute;
+    top: 12px; left: 50%;
+    transform: translateX(-50%);
+    width: 96px; height: 24px;
+    background: #050507;
+    border-radius: 100px;
+    z-index: 10;
+  }
+  .phone-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    margin-top: 32px;
+    border-bottom: 1px solid var(--rule);
+    flex-shrink: 0;
+  }
+  .phone-header .menu-icon { width: 14px; height: 10px; }
+  .phone-header .brand { font-size: 11px; letter-spacing: 0.35em; }
+  .phone-header .avatar { width: 22px; height: 22px; font-size: 10px; }
+  .phone-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 22px 18px 30px;
+  }
+  .phone-body::-webkit-scrollbar { width: 0; background: transparent; }
+
+  .m-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 24px;
+    line-height: 1;
+  }
+  .m-sub {
+    margin-top: 6px;
+    color: var(--text-dim);
+    font-size: 11px;
+    font-style: italic;
+  }
+  .m-sky-wrap {
+    margin-top: 22px;
+    width: 100%;
+    aspect-ratio: 340 / 360;
+    border-radius: 3px;
+    overflow: hidden;
+    background: radial-gradient(ellipse 70% 55% at 50% 50%,
+      rgba(38,38,58,0.45) 0%, rgba(15,15,24,0.55) 45%, rgba(5,5,8,0.85) 100%);
+    position: relative;
+  }
+  .m-sky-wrap::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 18% 22%, rgba(255,250,240,0.2), transparent 50%),
+      radial-gradient(1px 1px at 72% 70%, rgba(255,250,240,0.18), transparent 50%),
+      radial-gradient(1px 1px at 48% 88%, rgba(255,250,240,0.15), transparent 50%),
+      radial-gradient(1px 1px at 88% 28%, rgba(255,250,240,0.15), transparent 50%),
+      radial-gradient(1px 1px at 12% 64%, rgba(255,250,240,0.12), transparent 50%);
+    pointer-events: none;
+  }
+  .m-section-label {
+    color: var(--text-dim);
+    font-size: 9.5px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    margin-top: 28px;
+  }
+  .m-legend {
+    display: flex; justify-content: center; gap: 14px;
+    flex-wrap: wrap; margin-top: 14px;
+  }
+  .m-legend .legend-item { font-size: 8.5px; gap: 6px; letter-spacing: 0.18em; }
+  .m-legend .legend-dot { width: 4px; height: 4px; }
+
+  .m-row {
+    display: flex; align-items: center; gap: 12px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .m-row-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    box-shadow: 0 0 6px currentColor; flex-shrink: 0;
+  }
+  .m-row-text { flex: 1; min-width: 0; }
+  .m-row-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    color: var(--text);
+  }
+  .m-row-meta {
+    color: var(--text-dim);
+    font-size: 9.5px;
+    font-style: italic;
+    margin-top: 2px;
+  }
+  .m-row-chevron { color: var(--text-dim); font-size: 14px; font-weight: 200; }
+  .m-footnote {
+    margin-top: 22px;
+    padding-top: 16px;
+    border-top: 1px solid var(--rule);
+    color: var(--text-dim);
+    font-size: 9.5px;
+    font-style: italic;
+    line-height: 1.6;
+    text-align: center;
+  }
+
+  .m-detail-eyebrow {
+    color: var(--text-dim);
+    font-size: 9.5px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+  }
+  .m-detail-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 30px;
+    line-height: 1;
+    margin-top: 10px;
+  }
+  .m-detail-meaning {
+    margin-top: 12px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--text-soft);
+    line-height: 1.45;
+  }
+  .m-detail-meta-row {
+    margin-top: 16px;
+    display: flex; align-items: center; gap: 12px;
+    color: var(--text-dim); font-size: 9.5px;
+  }
+  .m-detail-meta-row .badge { padding: 3px 9px; font-size: 8.5px; }
+
+  .m-hero-star {
+    margin-top: 26px;
+    width: 100%; height: 200px;
+    border-radius: 3px; overflow: hidden;
+    background: radial-gradient(ellipse 60% 70% at 50% 50%,
+      rgba(45,30,25,0.45) 0%, rgba(15,12,10,0.55) 50%, rgba(5,5,8,0.85) 100%);
+    position: relative;
+  }
+  .m-detail-section-label {
+    color: var(--text-dim);
+    font-size: 9.5px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    margin-top: 24px;
+  }
+  .m-wave { margin-top: 14px; width: 100%; height: 70px; }
+  .m-wave-axis {
+    display: flex; justify-content: space-between;
+    color: var(--text-dim); font-size: 8.5px;
+    font-style: italic; margin-top: 4px;
+  }
+  .m-chip-row { margin-top: 12px; display: flex; gap: 8px; flex-wrap: wrap; }
+  .m-chip {
+    padding: 5px 11px;
+    border: 1px solid var(--rule-strong);
+    border-radius: 100px;
+    color: var(--text-soft);
+    font-size: 9.5px;
+    background: rgba(255,250,240,0.012);
+  }
+  .m-quote {
+    margin-top: 14px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--text);
+    padding-left: 14px;
+    border-left: 1px solid var(--coral);
+  }
+  .m-quote-attr {
+    margin-top: 8px;
+    margin-left: 15px;
+    color: var(--text-dim);
+    font-size: 9.5px;
+    font-style: italic;
+  }
+  .m-cta {
+    margin-top: 26px;
+    width: 100%;
+    padding: 14px;
+    border: 1px solid var(--gold-soft);
+    background: transparent;
+    color: var(--gold);
+    font-size: 9.5px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    cursor: pointer;
+    border-radius: 2px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 300;
+  }
+
+  /* ============ STATES: EMPTY / LOADING / LOCKED ============ */
+  .states-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    margin-top: 40px;
+    max-width: 760px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  @media (max-width: 760px) {
+    .states-row { grid-template-columns: 1fr; }
+  }
+  .state-card {
+    background: rgba(255,250,240,0.012);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+  }
+  .state-card-label {
+    color: var(--gold);
+    font-size: 10px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .state-sky {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border-radius: 4px;
+    overflow: hidden;
+    background: radial-gradient(ellipse 70% 55% at 50% 50%,
+      rgba(38,38,58,0.45) 0%, rgba(15,15,24,0.55) 45%, rgba(5,5,8,0.85) 100%);
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .state-sky::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      radial-gradient(1px 1px at 14% 22%, rgba(255,250,240,0.16), transparent 50%),
+      radial-gradient(1px 1px at 78% 70%, rgba(255,250,240,0.14), transparent 50%),
+      radial-gradient(1px 1px at 48% 88%, rgba(255,250,240,0.12), transparent 50%),
+      radial-gradient(1px 1px at 88% 28%, rgba(255,250,240,0.14), transparent 50%),
+      radial-gradient(1px 1px at 12% 64%, rgba(255,250,240,0.10), transparent 50%),
+      radial-gradient(1px 1px at 56% 38%, rgba(255,250,240,0.10), transparent 50%),
+      radial-gradient(1px 1px at 30% 50%, rgba(255,250,240,0.08), transparent 50%),
+      radial-gradient(1px 1px at 66% 18%, rgba(255,250,240,0.10), transparent 50%);
+    pointer-events: none;
+  }
+  .state-message {
+    position: relative; z-index: 2;
+    text-align: center;
+    padding: 0 24px;
+    max-width: 280px;
+  }
+  .state-message-eyebrow {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px;
+    color: var(--text);
+    font-weight: 300;
+    line-height: 1.2;
+  }
+  .state-message-body {
+    margin-top: 14px;
+    color: var(--text-soft);
+    font-size: 11.5px;
+    font-style: italic;
+    line-height: 1.6;
+  }
+  .loading-pulse {
+    position: relative; z-index: 2;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .loading-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    box-shadow: 0 0 24px var(--gold), 0 0 12px var(--gold);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 0.3; transform: scale(0.8); }
+    50%      { opacity: 1;   transform: scale(1.2); }
+  }
+  .loading-label {
+    margin-top: 22px;
+    color: var(--text-dim);
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    font-style: italic;
+  }
+</style>
+</head>
+<body>
+
+<!-- ============================================== -->
+<!-- SCREEN 1: PATTERN MAP                          -->
+<!-- ============================================== -->
+
+<header class="app-header">
+  <div class="menu-icon"><span></span><span></span><span></span></div>
+  <div class="brand">EARISO</div>
+  <div class="avatar">K</div>
+</header>
+
+<main class="page">
+
+  <h1 class="page-title">Your pattern map</h1>
+  <p class="page-sub">past 12 weeks</p>
+
+  <div class="sky-wrap" id="skyWrap">
+    <svg class="constellation" viewBox="0 0 1000 560" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <!-- glow gradients per family -->
+        <radialGradient id="glow-fear">
+          <stop offset="0%"  stop-color="#d96550" stop-opacity="0.85"/>
+          <stop offset="30%" stop-color="#d96550" stop-opacity="0.35"/>
+          <stop offset="70%" stop-color="#d96550" stop-opacity="0.08"/>
+          <stop offset="100%" stop-color="#d96550" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="glow-identity">
+          <stop offset="0%"  stop-color="#5c8ebd" stop-opacity="0.85"/>
+          <stop offset="30%" stop-color="#5c8ebd" stop-opacity="0.35"/>
+          <stop offset="70%" stop-color="#5c8ebd" stop-opacity="0.08"/>
+          <stop offset="100%" stop-color="#5c8ebd" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="glow-emotional">
+          <stop offset="0%"  stop-color="#c47a8a" stop-opacity="0.85"/>
+          <stop offset="30%" stop-color="#c47a8a" stop-opacity="0.35"/>
+          <stop offset="70%" stop-color="#c47a8a" stop-opacity="0.08"/>
+          <stop offset="100%" stop-color="#c47a8a" stop-opacity="0"/>
+        </radialGradient>
+        <radialGradient id="glow-belief">
+          <stop offset="0%"  stop-color="#c89856" stop-opacity="0.85"/>
+          <stop offset="30%" stop-color="#c89856" stop-opacity="0.35"/>
+          <stop offset="70%" stop-color="#c89856" stop-opacity="0.08"/>
+          <stop offset="100%" stop-color="#c89856" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+
+      <!-- threads (theme connections, drawn first so they sit underneath stars) -->
+      <!-- family: Fear of judgment <-> People pleasing -->
+      <line class="thread" data-themes="family"        data-from="s1" data-to="s2" x1="350" y1="220" x2="620" y2="180" stroke="#9a9489"/>
+      <!-- work:   Fear of judgment <-> Self doubt -->
+      <line class="thread" data-themes="work"          data-from="s1" data-to="s3" x1="350" y1="220" x2="800" y2="300" stroke="#9a9489"/>
+      <!-- work:   People pleasing <-> Self doubt -->
+      <line class="thread" data-themes="work"          data-from="s2" data-to="s3" x1="620" y1="180" x2="800" y2="300" stroke="#9a9489"/>
+      <!-- relationships: People pleasing <-> Comparison -->
+      <line class="thread" data-themes="relationships" data-from="s2" data-to="s4" x1="620" y1="180" x2="710" y2="400" stroke="#9a9489"/>
+      <!-- relationships: People pleasing <-> Validation seeking -->
+      <line class="thread" data-themes="relationships" data-from="s2" data-to="s5" x1="620" y1="180" x2="510" y2="340" stroke="#9a9489"/>
+      <!-- relationships: Comparison <-> Validation seeking -->
+      <line class="thread" data-themes="relationships" data-from="s4" data-to="s5" x1="710" y1="400" x2="510" y2="340" stroke="#9a9489"/>
+      <!-- family: Fear of judgment <-> Inherited belief -->
+      <line class="thread" data-themes="family"        data-from="s1" data-to="s7" x1="350" y1="220" x2="830" y2="120" stroke="#9a9489"/>
+      <!-- fear pair: Fear of judgment <-> Avoidance -->
+      <line class="thread" data-themes="fear"          data-from="s1" data-to="s8" x1="350" y1="220" x2="170" y2="120" stroke="#9a9489"/>
+
+      <!-- s1: Fear of judgment (FEAR, biggest, most recent) -->
+      <g class="star" data-id="s1"
+         data-name="Fear of judgment"
+         data-family="fear"
+         data-meaning="You worry constantly about what others think of you."
+         data-meta="8 moments · 2 days ago · family, work">
+        <circle class="star-halo" cx="350" cy="220" r="78" fill="url(#glow-fear)"/>
+        <circle class="star-halo" cx="350" cy="220" r="44" fill="url(#glow-fear)" opacity="0.7"/>
+        <circle class="star-core" cx="350" cy="220" r="6"  fill="#f4b09e"/>
+        <text class="star-name" x="350" y="270" text-anchor="middle">Fear of judgment</text>
+      </g>
+
+      <!-- s2: People pleasing (IDENTITY, medium) -->
+      <g class="star" data-id="s2"
+         data-name="People pleasing"
+         data-family="identity"
+         data-meaning="You put others' needs ahead of your own."
+         data-meta="5 moments · 5 days ago · relationships, work">
+        <circle class="star-halo" cx="620" cy="180" r="60" fill="url(#glow-identity)"/>
+        <circle class="star-halo" cx="620" cy="180" r="34" fill="url(#glow-identity)" opacity="0.7"/>
+        <circle class="star-core" cx="620" cy="180" r="5"  fill="#a8cce8"/>
+        <text class="star-name" x="620" y="225" text-anchor="middle">People pleasing</text>
+      </g>
+
+      <!-- s3: Self doubt (IDENTITY, small) -->
+      <g class="star" data-id="s3"
+         data-name="Self doubt"
+         data-family="identity"
+         data-meaning="You don't trust your own decisions."
+         data-meta="3 moments · 1 week ago · career, work">
+        <circle class="star-halo" cx="800" cy="300" r="46" fill="url(#glow-identity)"/>
+        <circle class="star-halo" cx="800" cy="300" r="26" fill="url(#glow-identity)" opacity="0.7"/>
+        <circle class="star-core" cx="800" cy="300" r="4"  fill="#a8cce8"/>
+        <text class="star-name" x="800" y="338" text-anchor="middle">Self doubt</text>
+      </g>
+
+      <!-- s4: Comparison (IDENTITY, small) -->
+      <g class="star" data-id="s4"
+         data-name="Comparison"
+         data-family="identity"
+         data-meaning="Your worth rises and falls through comparison."
+         data-meta="2 moments · 9 days ago · relationships">
+        <circle class="star-halo" cx="710" cy="400" r="38" fill="url(#glow-identity)"/>
+        <circle class="star-halo" cx="710" cy="400" r="22" fill="url(#glow-identity)" opacity="0.7"/>
+        <circle class="star-core" cx="710" cy="400" r="3.5"  fill="#a8cce8"/>
+        <text class="star-name" x="710" y="432" text-anchor="middle">Comparison</text>
+      </g>
+
+      <!-- s5: Validation seeking (IDENTITY, small) -->
+      <g class="star" data-id="s5"
+         data-name="Validation seeking"
+         data-family="identity"
+         data-meaning="You need others to confirm you're enough."
+         data-meta="2 moments · 10 days ago · relationships, work">
+        <circle class="star-halo" cx="510" cy="340" r="38" fill="url(#glow-identity)"/>
+        <circle class="star-halo" cx="510" cy="340" r="22" fill="url(#glow-identity)" opacity="0.7"/>
+        <circle class="star-core" cx="510" cy="340" r="3.5"  fill="#a8cce8"/>
+        <text class="star-name" x="510" y="372" text-anchor="middle">Validation seeking</text>
+      </g>
+
+      <!-- s6: Shame (EMOTIONAL, small) -->
+      <g class="star" data-id="s6"
+         data-name="Shame"
+         data-family="emotional"
+         data-meaning="You believe something is wrong with you."
+         data-meta="3 moments · 1 week ago · body">
+        <circle class="star-halo" cx="220" cy="420" r="46" fill="url(#glow-emotional)"/>
+        <circle class="star-halo" cx="220" cy="420" r="26" fill="url(#glow-emotional)" opacity="0.7"/>
+        <circle class="star-core" cx="220" cy="420" r="4"  fill="#dba6b3"/>
+        <text class="star-name" x="220" y="458" text-anchor="middle">Shame</text>
+      </g>
+
+      <!-- s7: Inherited belief (BELIEF, smallest) -->
+      <g class="star" data-id="s7"
+         data-name="Inherited belief"
+         data-family="belief"
+         data-meaning="You live by beliefs you inherited without questioning."
+         data-meta="2 moments · 2 weeks ago · family, money">
+        <circle class="star-halo" cx="830" cy="120" r="34" fill="url(#glow-belief)"/>
+        <circle class="star-halo" cx="830" cy="120" r="20" fill="url(#glow-belief)" opacity="0.7"/>
+        <circle class="star-core" cx="830" cy="120" r="3.5"  fill="#e5c08c"/>
+        <text class="star-name" x="830" y="152" text-anchor="middle">Inherited belief</text>
+      </g>
+
+      <!-- s8: Avoidance (FEAR, small) -->
+      <g class="star" data-id="s8"
+         data-name="Avoidance"
+         data-family="fear"
+         data-meaning="You stay away from what feels difficult to face."
+         data-meta="2 moments · 11 days ago · work">
+        <circle class="star-halo" cx="170" cy="120" r="38" fill="url(#glow-fear)"/>
+        <circle class="star-halo" cx="170" cy="120" r="22" fill="url(#glow-fear)" opacity="0.7"/>
+        <circle class="star-core" cx="170" cy="120" r="3.5"  fill="#f4b09e"/>
+        <text class="star-name" x="170" y="152" text-anchor="middle">Avoidance</text>
+      </g>
+    </svg>
+
+    <div class="sky-tip" id="skyTip">
+      <div class="sky-tip-name" id="tipName">—</div>
+      <div class="sky-tip-meaning" id="tipMeaning">—</div>
+      <div class="sky-tip-meta" id="tipMeta">—</div>
+    </div>
+  </div>
+
+  <!-- legend -->
+  <div class="legend">
+    <div class="legend-item"><span class="legend-dot legend-fear"      style="background: var(--coral);"></span>Fear</div>
+    <div class="legend-item"><span class="legend-dot legend-identity"  style="background: var(--blue);"></span>Identity</div>
+    <div class="legend-item"><span class="legend-dot legend-emotional" style="background: var(--pink);"></span>Emotional</div>
+    <div class="legend-item"><span class="legend-dot legend-belief"    style="background: var(--amber);"></span>Belief</div>
+  </div>
+
+  <!-- all patterns -->
+  <p class="section-label">All patterns</p>
+  <div class="pattern-list">
+    <div class="pattern-row">
+      <span class="row-dot" style="background: var(--coral); color: var(--coral);"></span>
+      <div>
+        <div class="row-name">Fear of judgment</div>
+        <div class="row-meta">fear<span class="sep">·</span>noticed 2 days ago<span class="sep">·</span>8 moments<span class="sep">·</span>family, work</div>
+      </div>
+      <span style="color: var(--text-dim); font-size: 18px; font-weight: 200;">›</span>
+    </div>
+
+    <div class="pattern-row">
+      <span class="row-dot" style="background: var(--blue); color: var(--blue);"></span>
+      <div>
+        <div class="row-name">People pleasing</div>
+        <div class="row-meta">identity<span class="sep">·</span>noticed 5 days ago<span class="sep">·</span>5 moments<span class="sep">·</span>relationships, work</div>
+      </div>
+      <span style="color: var(--text-dim); font-size: 18px; font-weight: 200;">›</span>
+    </div>
+
+    <div class="pattern-row">
+      <span class="row-dot" style="background: var(--blue); color: var(--blue);"></span>
+      <div>
+        <div class="row-name">Self doubt</div>
+        <div class="row-meta">identity<span class="sep">·</span>noticed 1 week ago<span class="sep">·</span>3 moments<span class="sep">·</span>career</div>
+      </div>
+      <span style="color: var(--text-dim); font-size: 18px; font-weight: 200;">›</span>
+    </div>
+
+    <div class="pattern-row">
+      <span class="row-dot" style="background: var(--pink); color: var(--pink);"></span>
+      <div>
+        <div class="row-name">Shame</div>
+        <div class="row-meta">emotional<span class="sep">·</span>noticed 1 week ago<span class="sep">·</span>3 moments<span class="sep">·</span>body</div>
+      </div>
+      <span style="color: var(--text-dim); font-size: 18px; font-weight: 200;">›</span>
+    </div>
+
+    <div class="pattern-row">
+      <span class="row-dot" style="background: var(--blue); color: var(--blue);"></span>
+      <div>
+        <div class="row-name">Comparison</div>
+        <div class="row-meta">identity<span class="sep">·</span>noticed 9 days ago<span class="sep">·</span>2 moments<span class="sep">·</span>relationships</div>
+      </div>
+      <span style="color: var(--text-dim); font-size: 18px; font-weight: 200;">›</span>
+    </div>
+
+    <div class="pattern-row">
+      <span class="row-dot" style="background: var(--blue); color: var(--blue);"></span>
+      <div>
+        <div class="row-name">Validation seeking</div>
+        <div class="row-meta">identity<span class="sep">·</span>noticed 10 days ago<span class="sep">·</span>2 moments<span class="sep">·</span>relationships, work</div>
+      </div>
+      <span style="color: var(--text-dim); font-size: 18px; font-weight: 200;">›</span>
+    </div>
+
+    <div class="pattern-row">
+      <span class="row-dot" style="background: var(--coral); color: var(--coral);"></span>
+      <div>
+        <div class="row-name">Avoidance</div>
+        <div class="row-meta">fear<span class="sep">·</span>noticed 11 days ago<span class="sep">·</span>2 moments<span class="sep">·</span>work</div>
+      </div>
+      <span style="color: var(--text-dim); font-size: 18px; font-weight: 200;">›</span>
+    </div>
+
+    <div class="pattern-row">
+      <span class="row-dot" style="background: var(--amber); color: var(--amber);"></span>
+      <div>
+        <div class="row-name">Inherited belief</div>
+        <div class="row-meta">belief<span class="sep">·</span>noticed 2 weeks ago<span class="sep">·</span>2 moments<span class="sep">·</span>family, money</div>
+      </div>
+      <span style="color: var(--text-dim); font-size: 18px; font-weight: 200;">›</span>
+    </div>
+  </div>
+
+  <p class="footnote">More patterns will appear as you have more conversations. Eariso only marks something when it's clear.</p>
+
+  <!-- ============================================== -->
+  <!-- SCREEN 2: PATTERN DETAIL                       -->
+  <!-- ============================================== -->
+
+  <div class="screen-divider">
+    <span class="screen-divider-line"></span>
+    <span class="screen-divider-label">tap a star → pattern detail</span>
+    <span class="screen-divider-line"></span>
+  </div>
+
+  <div class="detail-page" style="padding: 0;">
+
+    <p class="detail-eyebrow-line">You're looking at</p>
+    <h2 class="detail-title">Fear of judgment</h2>
+    <p class="detail-meaning">You worry constantly about what others think of you.</p>
+
+    <div class="detail-meta-row">
+      <span class="badge badge-fear">Fear</span>
+      <span>noticed 8 times · last seen 2 days ago</span>
+    </div>
+
+    <!-- hero star + orbiting theme stars -->
+    <div class="hero-star-wrap">
+      <svg class="constellation" viewBox="0 0 1100 360" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <radialGradient id="hero-glow">
+            <stop offset="0%"  stop-color="#d96550" stop-opacity="0.95"/>
+            <stop offset="20%" stop-color="#d96550" stop-opacity="0.55"/>
+            <stop offset="60%" stop-color="#d96550" stop-opacity="0.12"/>
+            <stop offset="100%" stop-color="#d96550" stop-opacity="0"/>
+          </radialGradient>
+          <radialGradient id="theme-glow">
+            <stop offset="0%"  stop-color="#e8e4dc" stop-opacity="0.55"/>
+            <stop offset="50%" stop-color="#e8e4dc" stop-opacity="0.10"/>
+            <stop offset="100%" stop-color="#e8e4dc" stop-opacity="0"/>
+          </radialGradient>
+        </defs>
+
+        <!-- orbit threads -->
+        <line class="thread" x1="550" y1="180" x2="240" y2="100" stroke="#9a9489" opacity="0.2"/>
+        <line class="thread" x1="550" y1="180" x2="240" y2="280" stroke="#9a9489" opacity="0.2"/>
+        <line class="thread" x1="550" y1="180" x2="880" y2="120" stroke="#9a9489" opacity="0.2"/>
+
+        <!-- theme satellite: family -->
+        <g class="star">
+          <circle class="star-halo" cx="240" cy="100" r="36" fill="url(#theme-glow)"/>
+          <circle class="star-core" cx="240" cy="100" r="3"  fill="#e8e4dc"/>
+          <text class="star-name" x="240" y="80" text-anchor="middle" style="font-size: 11px;">family</text>
+        </g>
+
+        <!-- theme satellite: work -->
+        <g class="star">
+          <circle class="star-halo" cx="240" cy="280" r="36" fill="url(#theme-glow)"/>
+          <circle class="star-core" cx="240" cy="280" r="3"  fill="#e8e4dc"/>
+          <text class="star-name" x="240" y="310" text-anchor="middle" style="font-size: 11px;">work</text>
+        </g>
+
+        <!-- theme satellite: friendship -->
+        <g class="star">
+          <circle class="star-halo" cx="880" cy="120" r="36" fill="url(#theme-glow)"/>
+          <circle class="star-core" cx="880" cy="120" r="3"  fill="#e8e4dc"/>
+          <text class="star-name" x="880" y="100" text-anchor="middle" style="font-size: 11px;">friendship</text>
+        </g>
+
+        <!-- HERO star -->
+        <g>
+          <circle class="star-halo" cx="550" cy="180" r="150" fill="url(#hero-glow)"/>
+          <circle class="star-halo" cx="550" cy="180" r="90"  fill="url(#hero-glow)" opacity="0.85"/>
+          <circle class="star-halo" cx="550" cy="180" r="50"  fill="url(#hero-glow)" opacity="0.9"/>
+          <circle              cx="550" cy="180" r="10"  fill="#f9c4b1"/>
+        </g>
+      </svg>
+    </div>
+
+    <!-- intensity over time -->
+    <div class="intensity-block">
+      <p class="intensity-label">Intensity over time</p>
+      <svg class="intensity-wave" viewBox="0 0 1100 140" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="wave-fill" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%"  stop-color="#d96550" stop-opacity="0.45"/>
+            <stop offset="100%" stop-color="#d96550" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <!-- area path: 12 weekly samples for "fear of judgment" -->
+        <!-- x divided across 1100, y inverted so higher = stronger -->
+        <path d="
+          M 0,120
+          C 50,115 80,112 100,108
+          S 180,102 200,98
+          S 280,92  300,85
+          S 380,75  400,72
+          S 480,68  500,60
+          S 580,55  600,50
+          S 680,42  700,38
+          S 780,30  800,26
+          S 880,22  900,20
+          S 980,16  1000,14
+          L 1100,10
+          L 1100,140
+          L 0,140 Z"
+          fill="url(#wave-fill)"/>
+        <path d="
+          M 0,120
+          C 50,115 80,112 100,108
+          S 180,102 200,98
+          S 280,92  300,85
+          S 380,75  400,72
+          S 480,68  500,60
+          S 580,55  600,50
+          S 680,42  700,38
+          S 780,30  800,26
+          S 880,22  900,20
+          S 980,16  1000,14
+          L 1100,10"
+          fill="none" stroke="#d96550" stroke-width="1.2" stroke-opacity="0.85"/>
+        <!-- markers at every 4 weeks -->
+        <circle cx="0"    cy="120" r="2.5" fill="#d96550" opacity="0.7"/>
+        <circle cx="367"  cy="72"  r="2.5" fill="#d96550" opacity="0.7"/>
+        <circle cx="733"  cy="38"  r="2.5" fill="#d96550" opacity="0.7"/>
+        <circle cx="1100" cy="10"  r="3.5" fill="#f9c4b1"/>
+      </svg>
+      <div class="intensity-axis">
+        <span>12 weeks ago</span>
+        <span>this week</span>
+      </div>
+    </div>
+
+    <!-- themes -->
+    <div class="themes-block">
+      <p class="intensity-label">Themes</p>
+      <div class="themes-row">
+        <span class="chip">family</span>
+        <span class="chip">work</span>
+        <span class="chip">friendship</span>
+      </div>
+    </div>
+
+    <!-- recent moment -->
+    <div class="moment-block">
+      <p class="intensity-label">Recent moment</p>
+      <p class="moment-quote">"I didn't want them to think less of me."</p>
+      <p class="moment-attr">From a conversation 2 days ago · Family</p>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-row">
+      <button class="cta">Explore in Reflection Room</button>
+    </div>
+
+  </div>
+
+  <!-- (mobile views, state previews and designer notes removed for the public preview) -->
+
+</main>
+
+<script>
+  // light interaction: hover a star -> brighten its threads + show tooltip
+  (function() {
+    const stars   = document.querySelectorAll('.star[data-id]');
+    const threads = document.querySelectorAll('.thread[data-from]');
+    const tip     = document.getElementById('skyTip');
+    const tName   = document.getElementById('tipName');
+    const tMean   = document.getElementById('tipMeaning');
+    const tMeta   = document.getElementById('tipMeta');
+    const skyWrap = document.getElementById('skyWrap');
+
+    function clearLit() {
+      threads.forEach(t => t.classList.remove('lit'));
+      stars.forEach(s => s.classList.remove('dim'));
+    }
+
+    stars.forEach(star => {
+      star.addEventListener('mouseenter', (e) => {
+        const id = star.dataset.id;
+
+        // light up connected threads + their endpoint stars
+        const connectedStarIds = new Set([id]);
+        threads.forEach(t => {
+          if (t.dataset.from === id || t.dataset.to === id) {
+            t.classList.add('lit');
+            connectedStarIds.add(t.dataset.from);
+            connectedStarIds.add(t.dataset.to);
+          }
+        });
+
+        // dim other stars
+        stars.forEach(s => {
+          if (!connectedStarIds.has(s.dataset.id)) s.classList.add('dim');
+        });
+
+        // tooltip content
+        tName.textContent = star.dataset.name;
+        tMean.textContent = star.dataset.meaning;
+        tMeta.innerHTML   = star.dataset.meta.split(' · ').join('<span class="sep">·</span>');
+
+        // position the tooltip near the star (use the core circle's screen position)
+        const core = star.querySelector('.star-core');
+        const bbox = core.getBoundingClientRect();
+        const wrap = skyWrap.getBoundingClientRect();
+        tip.style.left = (bbox.left + bbox.width/2 - wrap.left) + 'px';
+        tip.style.top  = (bbox.top - wrap.top) + 'px';
+        tip.classList.add('show');
+      });
+
+      star.addEventListener('mouseleave', () => {
+        clearLit();
+        tip.classList.remove('show');
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
