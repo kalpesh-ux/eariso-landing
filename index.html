@@ -70,7 +70,7 @@
     text-decoration: none;
     color: var(--gold);
     min-width: 0;
-    flex-shrink: 1;
+    flex-shrink: 0;
   }
   .brand-logo {
     width: 46px;
@@ -92,6 +92,8 @@
     display: flex;
     gap: 34px;
     align-items: center;
+    flex: 1;
+    justify-content: flex-end;
   }
   .nav-links a {
     color: var(--text-soft);
@@ -974,15 +976,15 @@
     .footer-top { flex-direction: column; }
     .footer-links { gap: 32px; }
   }
-  @media (max-width: 420px) {
-    /* Hide brand text on small phones — logo alone identifies the brand.
-       Gives nav links (About / Privacy / Terms) enough room to breathe.
-       Catches Android phones (360–412px) and iPhone mini (375px). */
-    .nav-inner { padding: 12px 12px; gap: 8px; }
-    .brand-logo { width: 32px; height: 32px; }
+  @media (max-width: 600px) {
+    /* On all phones: hide brand text, keep logo only.
+       Gives About / Privacy / Terms clear space on every Android and iPhone.
+       Logo alone is enough to identify the brand at mobile size. */
+    .nav-inner { padding: 14px 16px; gap: 12px; }
+    .brand-logo { width: 34px; height: 34px; }
     .brand-text { display: none; }
-    .nav-links { gap: 14px; }
-    .nav-links a { font-size: 10px; letter-spacing: 1px; }
+    .nav-links { gap: 20px; }
+    .nav-links a { font-size: 11px; letter-spacing: 1.2px; }
   }
 </style>
 </head>
