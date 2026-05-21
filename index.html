@@ -1001,9 +1001,9 @@
       <span></span><span></span><span></span>
     </button>
     <div class="nav-links" id="navLinks">
-      <a onclick="showPage('about')" data-page="about">About</a>
-      <a onclick="showPage('privacy')" data-page="privacy">Privacy</a>
-      <a onclick="showPage('terms')" data-page="terms">Terms</a>
+      <a href="#about" onclick="event.preventDefault(); showPage('about')" data-page="about">About</a>
+      <a href="#privacy" onclick="event.preventDefault(); showPage('privacy')" data-page="privacy">Privacy</a>
+      <a href="#terms" onclick="event.preventDefault(); showPage('terms')" data-page="terms">Terms</a>
     </div>
     <div class="nav-store">
       <a href="https://app.eariso.ai/login">Log in</a>
@@ -1215,7 +1215,7 @@
           <span style="color: var(--gold); flex-shrink: 0;">—</span> We never read your conversations manually
         </li>
       </ul>
-      <a onclick="showPage('privacy')" style="font-size: 12px; color: var(--gold); letter-spacing: 1.5px; cursor: pointer; text-decoration: none; border-bottom: 1px solid rgba(201,169,97,0.3); padding-bottom: 3px; text-transform: uppercase;">
+      <a href="#privacy" onclick="event.preventDefault(); showPage('privacy')" style="font-size: 12px; color: var(--gold); letter-spacing: 1.5px; cursor: pointer; text-decoration: none; border-bottom: 1px solid rgba(201,169,97,0.3); padding-bottom: 3px; text-transform: uppercase;">
         Read our full privacy policy →
       </a>
     </div>
@@ -1442,12 +1442,12 @@
         <div class="footer-col">
           <h4>Product</h4>
           <a onclick="showPage('home'); setTimeout(()=>document.getElementById('home-pricing').scrollIntoView({behavior:'smooth'}),100)">Pricing</a>
-          <a onclick="showPage('about')">About</a>
+          <a href="#about" onclick="event.preventDefault(); showPage('about')">About</a>
         </div>
         <div class="footer-col">
           <h4>Legal</h4>
-          <a onclick="showPage('privacy')">Privacy</a>
-          <a onclick="showPage('terms')">Terms</a>
+          <a href="#privacy" onclick="event.preventDefault(); showPage('privacy')">Privacy</a>
+          <a href="#terms" onclick="event.preventDefault(); showPage('terms')">Terms</a>
         </div>
         <div class="footer-col">
           <h4>Contact</h4>
@@ -1473,10 +1473,20 @@
       a.classList.toggle('active', a.dataset.page === id);
     });
     document.getElementById('navLinks').classList.remove('open');
+    // Keep URL in sync without triggering a hashchange loop.
+    history.replaceState(null, '', id === 'home' ? location.pathname : '#' + id);
   }
   function toggleNav() {
     document.getElementById('navLinks').classList.toggle('open');
   }
+  // Hash routing — read hash on initial load and on back/forward navigation.
+  function initFromHash() {
+    const hash = window.location.hash.slice(1);
+    const valid = ['about', 'privacy', 'terms'];
+    showPage(valid.includes(hash) ? hash : 'home');
+  }
+  window.addEventListener('hashchange', initFromHash);
+  initFromHash();
 </script>
 </body>
 </html>
