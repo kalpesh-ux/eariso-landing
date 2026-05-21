@@ -1461,6 +1461,16 @@
   </div>
 </footer>
 <script>
+  // Android: center the nav so it looks clean instead of broken
+  if (/android/i.test(navigator.userAgent)) {
+    document.addEventListener('DOMContentLoaded', function() {
+      var navInner = document.querySelector('.nav-inner');
+      var navLinks = document.getElementById('navLinks');
+      if (navInner) navInner.style.justifyContent = 'center';
+      if (navLinks) navLinks.style.display = 'none';
+    });
+  }
+
   function showPage(id) {
     document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
     const t = document.getElementById('page-' + id);
