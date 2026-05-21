@@ -159,6 +159,7 @@
     text-align: center;
     padding: 80px 40px;
     position: relative;
+    overflow: hidden; /* clip 1100px glow pseudo-element — prevents Android viewport expansion */
   }
   .hero::before {
     content: '';
