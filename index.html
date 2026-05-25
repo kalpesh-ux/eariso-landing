@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Eariso — The AI Mirror that shows you your own thinking</title>
-<meta name="description" content="Eariso is a pattern intelligence system. Not a chatbot. An AI that helps you see the patterns driving your thinking and behaviour.">
+<title>Eariso — See what's shaping your thinking</title>
+<meta name="description" content="Eariso surfaces the patterns shaping your thinking — the fears, beliefs, and repeated ways of seeing that have been there all along. A private space for self-observation.">
 <link rel="icon" type="image/png" href="logo.png">
 <link rel="apple-touch-icon" href="logo.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -217,17 +217,6 @@
   .hero-title em {
     font-style: italic;
     color: var(--gold);
-    background: linear-gradient(100deg, #C9A961 0%, #C9A961 30%, #F0DDA8 50%, #C9A961 70%, #C9A961 100%);
-    background-size: 220% 100%;
-    background-position: 0% 50%;
-    -webkit-background-clip: text;
-    background-clip: text;
-    -webkit-text-fill-color: transparent;
-    animation: goldShimmer 9s ease-in-out infinite;
-  }
-  @keyframes goldShimmer {
-    0%, 100% { background-position: 0% 50%; }
-    50%      { background-position: 100% 50%; }
   }
   .hero-sub {
     font-size: 17px;
@@ -306,6 +295,7 @@
   .how-card {
     padding: 50px 40px;
     border-right: 1px solid var(--rule);
+    background: linear-gradient(to bottom, rgba(201,169,97,0.03), transparent);
   }
   .how-card:last-child { border-right: none; }
   .how-card-num {
@@ -320,6 +310,7 @@
     font-family: 'Cormorant Garamond', serif;
     font-size: 22px;
     font-weight: 500;
+    font-style: italic;
     color: var(--text);
     margin-bottom: 14px;
     line-height: 1.3;
@@ -380,6 +371,7 @@
     font-family: 'Cormorant Garamond', serif;
     font-size: 18px;
     font-weight: 500;
+    font-style: italic;
     color: var(--text);
     margin-bottom: 5px;
     line-height: 1.2;
@@ -480,16 +472,17 @@
   }
   .deeper-card {
     padding: 38px;
-    background: var(--bg-soft);
+    background: linear-gradient(to bottom, rgba(201,169,97,0.04), var(--bg-soft));
     border: 1px solid var(--rule);
     position: relative;
+    box-shadow: inset 0 1px 0 rgba(201,169,97,0.14), 0 4px 24px rgba(0,0,0,0.4);
   }
   .deeper-card::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(201,169,97,0.25), transparent);
+    background: linear-gradient(90deg, transparent, rgba(201,169,97,0.35), transparent);
   }
   .deeper-card-tag {
     font-size: 9px;
@@ -503,6 +496,7 @@
     font-family: 'Cormorant Garamond', serif;
     font-size: 24px;
     font-weight: 500;
+    font-style: italic;
     color: var(--text);
     margin-bottom: 12px;
     line-height: 1.2;
@@ -1015,7 +1009,7 @@
   <div class="hero">
     <img src="logo.png" alt="Eariso logo" class="hero-logo">
     <div class="hero-eyebrow">A Space for Self-Observation</div>
-    <h1 class="hero-title">The AI Mirror that shows you <em>your own thinking.</em></h1>
+    <h1 class="hero-title">Your thinking has patterns. <em>Most of them are invisible.</em></h1>
     <p class="hero-sub">Not just answers. What's behind the question. The patterns shaping your thoughts, decisions, and reactions — made visible, without judgment.</p>
     <div class="hero-divider"></div>
     <div class="hero-cta">
@@ -1436,7 +1430,7 @@
           <img src="logo.png" alt="Eariso logo" class="brand-logo">
           <span class="brand-text">Eariso</span>
         </a>
-        <p>The AI Mirror that shows you your own thinking.</p>
+        <p>A space to see what's actually shaping you.</p>
       </div>
       <div class="footer-links">
         <div class="footer-col">
